@@ -27,6 +27,11 @@ ExportedObj/
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
 
+
 # System files
 .DS_Store
 *.swp
+
+# Builds
+*.apk
+*.unitypackage
