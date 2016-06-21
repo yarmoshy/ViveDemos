@@ -44,18 +44,19 @@ public class ControllerEventListener : MonoBehaviour
     void DoTriggerClicked(object sender, ControllerClickedEventArgs e)
     {
         DebugLogger(e.controllerIndex, "TRIGGER", "pressed down", e);
-        playerSphere.AddBraker(sender);
+        playerSphere.AddBraker(e.controllerIndex);
     }
 
     void DoTriggerUnclicked(object sender, ControllerClickedEventArgs e)
     {
         DebugLogger(e.controllerIndex, "TRIGGER", "released", e);
-        playerSphere.RemoveBraker(sender);
+        playerSphere.RemoveBraker(e.controllerIndex);
     }
 
     void DoTriggerAxisChanged(object sender, ControllerClickedEventArgs e)
     {
         DebugLogger(e.controllerIndex, "TRIGGER", "axis changed", e);
+        playerSphere.SetBrakerPressure(e.controllerIndex, e.buttonPressure);
     }
 
     void DoApplicationMenuClicked(object sender, ControllerClickedEventArgs e)

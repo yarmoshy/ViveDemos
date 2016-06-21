@@ -8,11 +8,13 @@ public class PlayerSphere : VRTK_InteractableObject
     public GameState gameState;
     public int touchForceMultiplier = 100;
     public ushort hapticFeedbackStrength = 500;
+    public float maxBrakeTime = 1000.0f;
+    public float minBrakeTime = 20.0f;
 
-    ArrayList brakingControllers = new ArrayList(2); 
+    Hashtable brakingPressures = new Hashtable(); 
     VRTK_ControllerActions controllerActions;
     private float strength = 0;
-    private float smoothTime = 40.0f;
+    private float distanceToGround;
     private bool reset = false;
 
     public override void StartTouching(GameObject touchingObject)
@@ -27,10 +29,38 @@ public class PlayerSphere : VRTK_InteractableObject
         controllerActions.TriggerHapticPulse(10, hapticFeedbackStrength);
     }
 
+    public void AddBraker(uint sender)
+    {
+        brakingPressures.Add(sender, 0);
+    }
+
+    public void RemoveBraker(uint sender)
+    {
+        brakingPressures.Remove(sender);
+    }
+
+    public void SetBrakerPressure(object sender, float pressure)
+    {
+        if (brakingPressures.ContainsKey(sender))
+            brakingPressures[sender] = pressure;
+    }
+
+    public void ResetPlayer()
+    {
+        reset = true;
+    }
+
     protected override void Awake()
     {
         base.Awake();
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+        MeshCollider collider = GetComponent<MeshCollider>();
+        distanceToGround = collider.bounds.extents.y;
     }
 
     protected override void Update()
@@ -45,7 +75,7 @@ public class PlayerSphere : VRTK_InteractableObject
         {
             DoResetPlayer();
         }
-        if (brakingControllers.Count > 0)
+        if (brakingPressures.Count > 0)
         {
             DoStop();
         }
@@ -53,30 +83,24 @@ public class PlayerSphere : VRTK_InteractableObject
 
     private void DoStop()
     {
+        if (!IsGrounded()) return;
+        float pressureSumation = 0f;
+        foreach (float pressure in brakingPressures.Values)
+        {
+            pressureSumation += pressure;
+        }
+        float smoothTime = minBrakeTime + ((maxBrakeTime - minBrakeTime) * pressureSumation/2.0f);
         Rigidbody prb = player.GetComponent<Rigidbody>();
         Mathf.SmoothDamp(0.0f, 1.0f, ref strength, smoothTime);
         Vector3 f = -(prb.mass * prb.velocity) * strength;
         Vector3 t= -(prb.mass * prb.angularVelocity) * strength;
-
         prb.AddForce(f, ForceMode.Impulse);
         prb.AddTorque(t, ForceMode.Impulse);
-        //prb.AddForce(-(Physics.gravity) * strength, ForceMode.Acceleration);
-        //prb.AddTorque(-(Physics.gravity) * strength, ForceMode.Acceleration);
     }
 
-    public void AddBraker(object sender)
+    private bool IsGrounded()
     {
-        brakingControllers.Add(sender);
-    }
-
-    public void RemoveBraker(object sender)
-    {
-        brakingControllers.Remove(sender);
-    }
-
-    public void ResetPlayer()
-    {
-        reset = true;
+        return Physics.Raycast(transform.position, -Vector3.up, distanceToGround + 0.1f);
     }
 
     private void DoResetPlayer()
