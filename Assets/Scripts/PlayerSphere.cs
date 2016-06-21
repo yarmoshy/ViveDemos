@@ -5,6 +5,7 @@ public class PlayerSphere : VRTK_InteractableObject
 {
     [Header("Game Objects", order = 4)]
     public GameObject player;
+    public GameState gameState;
     public int touchForceMultiplier = 100;
     public ushort hapticFeedbackStrength = 500;
 
@@ -13,10 +14,12 @@ public class PlayerSphere : VRTK_InteractableObject
     public override void StartTouching(GameObject touchingObject)
     {
         base.StartTouching(touchingObject);
+        if (!gameState.GetReady()) return;
+
         controllerActions = touchingObject.GetComponent<VRTK_ControllerActions>();
         Rigidbody prb = player.GetComponent<Rigidbody>();
         Vector3 impact = touchingObject.transform.localPosition.normalized * touchForceMultiplier;
-        prb.AddForce(impact);
+        prb.AddForce(new Vector3 (impact.x, 0, impact.z));
         controllerActions.TriggerHapticPulse(10, hapticFeedbackStrength);
     }
 
@@ -35,6 +38,7 @@ public class PlayerSphere : VRTK_InteractableObject
             Rigidbody prb = player.GetComponent<Rigidbody>();
             prb.velocity = Vector3.zero;
             prb.angularVelocity = Vector3.zero;
+            gameState.SetUnready();
         }
     }
 }
