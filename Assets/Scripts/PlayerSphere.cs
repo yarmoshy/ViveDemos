@@ -84,18 +84,19 @@ public class PlayerSphere : VRTK_InteractableObject
     private void DoStop()
     {
         if (!IsGrounded()) return;
+
         float pressureSumation = 0f;
         foreach (float pressure in brakingPressures.Values)
         {
             pressureSumation += pressure;
         }
-        float smoothTime = minBrakeTime + ((maxBrakeTime - minBrakeTime) * pressureSumation/2.0f);
+        float smoothTime = minBrakeTime + ((maxBrakeTime - minBrakeTime) * (1 - (pressureSumation/2.0f)));
         Rigidbody prb = player.GetComponent<Rigidbody>();
         Mathf.SmoothDamp(0.0f, 1.0f, ref strength, smoothTime);
         Vector3 f = -(prb.mass * prb.velocity) * strength;
         Vector3 t= -(prb.mass * prb.angularVelocity) * strength;
-        prb.AddForce(f, ForceMode.Impulse);
         prb.AddTorque(t, ForceMode.Impulse);
+        prb.AddForce(f, ForceMode.Impulse);
     }
 
     private bool IsGrounded()
@@ -107,7 +108,7 @@ public class PlayerSphere : VRTK_InteractableObject
     {
         reset = false;
         player.transform.position = new Vector3(0, 1, 0);
-        //player.transform.position = new Vector3(-30.78f, -72.091f, 303.43f);
+       // player.transform.position = new Vector3(-30.78f, -72.091f, 303.43f);
         Rigidbody prb = player.GetComponent<Rigidbody>();
         prb.velocity = Vector3.zero;
         prb.angularVelocity = Vector3.zero;
