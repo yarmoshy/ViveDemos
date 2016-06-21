@@ -4,7 +4,6 @@ using System.Collections;
 public class GameState : MonoBehaviour {
 
     bool ready = false;
-    public StartSphere startSphere;
 
     public void SetReady()
     {
