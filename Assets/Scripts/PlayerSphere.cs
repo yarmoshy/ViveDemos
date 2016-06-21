@@ -10,9 +10,9 @@ public class PlayerSphere : VRTK_InteractableObject
 
     VRTK_ControllerActions controllerActions;
 
-    public override void StopTouching(GameObject touchingObject)
+    public override void StartTouching(GameObject touchingObject)
     {
-        base.StopTouching(touchingObject);
+        base.StartTouching(touchingObject);
         controllerActions = touchingObject.GetComponent<VRTK_ControllerActions>();
         Rigidbody prb = player.GetComponent<Rigidbody>();
         Vector3 impact = touchingObject.transform.localPosition.normalized * touchForceMultiplier;
