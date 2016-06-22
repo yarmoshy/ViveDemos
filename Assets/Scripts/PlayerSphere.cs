@@ -124,9 +124,12 @@ public class PlayerSphere : VRTK_InteractableObject
     private void DoResetPlayer()
     {
         reset = false;
-       // player.transform.position = new Vector3(0, 1, 0);
-        player.transform.position = new Vector3(-90.004f, -196.95f, 211.6f);
+        player.transform.position = new Vector3(0, 1, 0);
+        
         // player.transform.position = new Vector3(-30.78f, -72.091f, 303.43f);
+        // player.transform.position = new Vector3(-90.004f, -196.95f, 211.6f);
+        // player.transform.position = new Vector3(111.1f, -77.6f, -62.8f);
+
         Rigidbody prb = player.GetComponent<Rigidbody>();
         prb.velocity = Vector3.zero;
         prb.angularVelocity = Vector3.zero;
