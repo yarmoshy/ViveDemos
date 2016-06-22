@@ -12,6 +12,11 @@ public class ReverseNormals : MonoBehaviour
         {
             Mesh mesh = filter.mesh;
 
+            Vector3[] normals = mesh.normals;
+            for (int i = 0; i < normals.Length; i++)
+                normals[i] = -normals[i];
+            mesh.normals = normals;
+
             for (int m = 0; m < mesh.subMeshCount; m++)
             {
                 int[] triangles = mesh.GetTriangles(m);
