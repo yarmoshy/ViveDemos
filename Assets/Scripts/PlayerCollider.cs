@@ -10,5 +10,17 @@ public class PlayerCollider : MonoBehaviour {
         {
             playerSphere.ResetPlayer();
         }
+        if (col.gameObject.tag == "BoostPlatform")
+        {
+            playerSphere.BoostPlayer();
+        }
+    }
+
+    void OnCollisionExit(Collision col)
+    {
+        if (col.gameObject.tag == "BoostPlatform")
+        {
+            playerSphere.UnboostPlayer();
+        }
     }
 }

@@ -16,6 +16,7 @@ public class PlayerSphere : VRTK_InteractableObject
     private float strength = 0;
     private float distanceToGround;
     private bool reset = false;
+    private bool boost = false;
 
     public override void StartTouching(GameObject touchingObject)
     {
@@ -50,6 +51,16 @@ public class PlayerSphere : VRTK_InteractableObject
         reset = true;
     }
 
+    public void BoostPlayer()
+    {
+        boost = true;
+    }
+
+    public void UnboostPlayer()
+    {
+        boost = false;
+    }
+
     protected override void Awake()
     {
         base.Awake();
@@ -78,7 +89,13 @@ public class PlayerSphere : VRTK_InteractableObject
         if (brakingPressures.Count > 0)
         {
             DoStop();
+        } else if (boost)
+        {
+            Rigidbody prb = player.GetComponent<Rigidbody>();
+            Vector3 force = prb.velocity.normalized * 1;
+            prb.AddForce(force, ForceMode.Impulse);
         }
+        
     }
 
     private void DoStop()
@@ -107,8 +124,9 @@ public class PlayerSphere : VRTK_InteractableObject
     private void DoResetPlayer()
     {
         reset = false;
-        player.transform.position = new Vector3(0, 1, 0);
-       // player.transform.position = new Vector3(-30.78f, -72.091f, 303.43f);
+       // player.transform.position = new Vector3(0, 1, 0);
+        player.transform.position = new Vector3(-90.004f, -196.95f, 211.6f);
+        // player.transform.position = new Vector3(-30.78f, -72.091f, 303.43f);
         Rigidbody prb = player.GetComponent<Rigidbody>();
         prb.velocity = Vector3.zero;
         prb.angularVelocity = Vector3.zero;
