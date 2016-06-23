@@ -125,7 +125,7 @@ public class PlayerSphere : VRTK_InteractableObject
     private void DoResetPlayer()
     {
         reset = false;
-        player.transform.position = new Vector3(0, 1, 0);
+        player.transform.position = new Vector3(0, 4, 0);
         
         // player.transform.position = new Vector3(-30.78f, -72.091f, 303.43f);
         // player.transform.position = new Vector3(-90.004f, -196.95f, 211.6f);
