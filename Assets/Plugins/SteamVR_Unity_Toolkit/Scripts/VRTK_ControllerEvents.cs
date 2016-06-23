@@ -76,8 +76,8 @@ public class VRTK_ControllerEvents : MonoBehaviour {
     private SteamVR_TrackedObject trackedController;
     private SteamVR_Controller.Device device;
 
-    private Vector2 touchpadAxis = Vector2.zero;
-    private Vector2 triggerAxis = Vector2.zero;
+    public Vector2 touchpadAxis = Vector2.zero;
+    public Vector2 triggerAxis = Vector2.zero;
 
     public virtual void OnTriggerClicked(ControllerClickedEventArgs e)
     {

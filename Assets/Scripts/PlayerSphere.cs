@@ -11,7 +11,7 @@ public class PlayerSphere : VRTK_InteractableObject
     public float maxBrakeTime = 1000.0f;
     public float minBrakeTime = 20.0f;
 
-    Hashtable brakingPressures = new Hashtable(); 
+    ArrayList brakingPressures = new ArrayList(); 
     VRTK_ControllerActions controllerActions;
     private float strength = 0;
     private float distanceToGround;
@@ -30,21 +30,21 @@ public class PlayerSphere : VRTK_InteractableObject
         controllerActions.TriggerHapticPulse(10, hapticFeedbackStrength);
     }
 
-    public void AddBraker(uint sender)
+    public void AddBraker(object sender)
     {
-        brakingPressures.Add(sender, 0);
+        brakingPressures.Add(sender);
     }
 
-    public void RemoveBraker(uint sender)
+    public void RemoveBraker(object sender)
     {
         brakingPressures.Remove(sender);
     }
 
-    public void SetBrakerPressure(object sender, float pressure)
+  /*  public void SetBrakerPressure(object sender, float pressure)
     {
         if (brakingPressures.ContainsKey(sender))
             brakingPressures[sender] = pressure;
-    }
+    }*/
 
     public void ResetPlayer()
     {
@@ -103,9 +103,10 @@ public class PlayerSphere : VRTK_InteractableObject
         if (!IsGrounded()) return;
 
         float pressureSumation = 0f;
-        foreach (float pressure in brakingPressures.Values)
+        foreach (VRTK_ControllerEvents controller in brakingPressures)
         {
-            pressureSumation += pressure;
+           pressureSumation += controller.triggerAxis.x;
+           // pressureSumation += 1;
         }
         float smoothTime = minBrakeTime + ((maxBrakeTime - minBrakeTime) * (1 - (pressureSumation/2.0f)));
         Rigidbody prb = player.GetComponent<Rigidbody>();
