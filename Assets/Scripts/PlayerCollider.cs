@@ -16,6 +16,14 @@ public class PlayerCollider : MonoBehaviour {
         }
     }
 
+    void OnTriggerEnter(Collider col)
+    {
+        if (col.gameObject.tag == "Checkpoint")
+        {
+            playerSphere.SetCheckpoint(col.gameObject.GetComponent<CheckPoint>());
+        }
+    }
+
     void OnCollisionExit(Collision col)
     {
         if (col.gameObject.tag == "BoostPlatform")
