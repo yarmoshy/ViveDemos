@@ -30,5 +30,9 @@ public class PlayerCollider : MonoBehaviour {
         {
             playerSphere.UnboostPlayer();
         }
+        if (col.gameObject.tag == "RemoveAfterCollision")
+        {
+            col.gameObject.SetActive(false);
+        }
     }
 }
