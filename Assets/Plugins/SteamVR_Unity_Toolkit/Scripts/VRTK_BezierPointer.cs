@@ -12,239 +12,261 @@
 // This script is an implementation of the VRTK_WorldPointer.
 //
 //====================================================================================
-
-using UnityEngine;
-using System.Collections;
-
-public class VRTK_BezierPointer : VRTK_WorldPointer
+namespace VRTK
 {
-    public float pointerLength = 10f;
-    public int pointerDensity = 10;
-    public bool showPointerCursor = true;
-    public float pointerCursorRadius = 0.5f;
-    public float beamCurveOffset = 1f;
-    public GameObject customPointerTracer;
-    public GameObject customPointerCursor;
+    using UnityEngine;
+    using System.Collections;
 
-    private Transform projectedBeamContainer;
-    private Transform projectedBeamForward;
-    private Transform projectedBeamJoint;
-    private Transform projectedBeamDown;
-
-    private GameObject pointerCursor;
-    private CurveGenerator curvedBeam;
-
-    // Use this for initialization
-    protected override void Start()
+    public class VRTK_BezierPointer : VRTK_WorldPointer
     {
-        base.Start();
-        InitProjectedBeams();
-        InitPointer();
-        TogglePointer(false);
-    }
+        public float pointerLength = 10f;
+        public int pointerDensity = 10;
+        public bool showPointerCursor = true;
+        public float pointerCursorRadius = 0.5f;
+        public float beamCurveOffset = 1f;
+        public GameObject customPointerTracer;
+        public GameObject customPointerCursor;
+        public LayerMask layersToIgnore = Physics.IgnoreRaycastLayer;
 
-    protected override void Update()
-    {
-        base.Update();
-        if (projectedBeamForward.gameObject.activeSelf)
+        private GameObject projectedBeamContainer;
+        private GameObject projectedBeamForward;
+        private GameObject projectedBeamJoint;
+        private GameObject projectedBeamDown;
+
+        private GameObject pointerCursor;
+        private GameObject curvedBeamContainer;
+        private CurveGenerator curvedBeam;
+
+        // Use this for initialization
+        protected override void Start()
         {
-            ProjectForwardBeam();
-            ProjectDownBeam();
-            DisplayCurvedBeam();
-            SetPointerCursor();
-        }
-    }
-
-    protected override void InitPointer()
-    {
-        pointerCursor = (customPointerCursor ? Instantiate(customPointerCursor) : CreateCursor());
-
-        pointerCursor.name = string.Format("[{0}]PlayerObject_WorldPointer_BezierPointer_PointerCursor", this.gameObject.name);
-        pointerCursor.layer = 2;
-        pointerCursor.SetActive(false);
-
-        GameObject global = new GameObject(string.Format("[{0}]PlayerObject_WorldPointer_BezierPointer_CurvedBeamContainer", this.gameObject.name));
-        global.SetActive(false);
-        curvedBeam = global.gameObject.AddComponent<CurveGenerator>();
-        curvedBeam.transform.parent = null;
-        curvedBeam.Create(pointerDensity, pointerCursorRadius, customPointerTracer);
-        base.InitPointer();
-    }
-
-    private GameObject CreateCursor()
-    {
-        float cursorYOffset = 0.02f;
-        GameObject cursor = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-        cursor.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-        cursor.GetComponent<MeshRenderer>().receiveShadows = false;
-        cursor.transform.localScale = new Vector3(pointerCursorRadius, cursorYOffset, pointerCursorRadius);
-        Destroy(cursor.GetComponent<CapsuleCollider>());
-        return cursor;
-    }
-
-    protected override void SetPointerMaterial()
-    {
-        if (pointerCursor.GetComponent<MeshRenderer>())
-        {
-            pointerCursor.GetComponent<MeshRenderer>().material = pointerMaterial;
+            base.Start();
+            InitProjectedBeams();
+            InitPointer();
+            TogglePointer(false);
         }
 
-        foreach(MeshRenderer mr in pointerCursor.GetComponentsInChildren<MeshRenderer>())
+        protected override void Update()
         {
-            mr.material = pointerMaterial;
+            base.Update();
+            if (projectedBeamForward.gameObject.activeSelf)
+            {
+                ProjectForwardBeam();
+                ProjectDownBeam();
+                DisplayCurvedBeam();
+                SetPointerCursor();
+            }
         }
 
-        if (pointerCursor.GetComponent<SkinnedMeshRenderer>())
+        protected override void InitPointer()
         {
-            pointerCursor.GetComponent<SkinnedMeshRenderer>().material = pointerMaterial;
+            pointerCursor = (customPointerCursor ? Instantiate(customPointerCursor) : CreateCursor());
+
+            pointerCursor.name = string.Format("[{0}]PlayerObject_WorldPointer_BezierPointer_PointerCursor", this.gameObject.name);
+            pointerCursor.layer = 2;
+            pointerCursor.SetActive(false);
+
+            curvedBeamContainer = new GameObject(string.Format("[{0}]PlayerObject_WorldPointer_BezierPointer_CurvedBeamContainer", this.gameObject.name));
+            curvedBeamContainer.SetActive(false);
+            curvedBeam = curvedBeamContainer.gameObject.AddComponent<CurveGenerator>();
+            curvedBeam.transform.parent = null;
+            curvedBeam.Create(pointerDensity, pointerCursorRadius, customPointerTracer);
+            base.InitPointer();
         }
 
-        foreach (SkinnedMeshRenderer mr in pointerCursor.GetComponentsInChildren<SkinnedMeshRenderer>())
+        protected override void SetPointerMaterial()
         {
-            mr.material = pointerMaterial;
+            if (pointerCursor.GetComponent<Renderer>())
+            {
+                pointerCursor.GetComponent<Renderer>().material = pointerMaterial;
+            }
+
+            foreach (Renderer mr in pointerCursor.GetComponentsInChildren<Renderer>())
+            {
+                mr.material = pointerMaterial;
+            }
+
+            base.SetPointerMaterial();
         }
 
-        base.SetPointerMaterial();
-    }
-
-    protected override void TogglePointer(bool state)
-    {
-        state = (beamAlwaysOn ? true : state);
-
-        projectedBeamForward.gameObject.SetActive(state);
-        projectedBeamJoint.gameObject.SetActive(state);
-        projectedBeamDown.gameObject.SetActive(state);
-    }
-
-    protected override void DisablePointerBeam(object sender, ControllerClickedEventArgs e)
-    {
-        base.PointerSet();
-        base.DisablePointerBeam(sender, e);
-        TogglePointerCursor(false);
-        curvedBeam.TogglePoints(false);
-    }
-
-    private void TogglePointerCursor(bool state)
-    {
-        state = (beamAlwaysOn ? true : state);
-
-        bool pointerCursorState = (showPointerCursor && state ? showPointerCursor : false);
-        bool playAreaCursorState = (showPlayAreaCursor && state ? showPlayAreaCursor : false);
-        pointerCursor.gameObject.SetActive(pointerCursorState);
-        base.TogglePointer(playAreaCursorState);
-    }
-
-    private void InitProjectedBeams()
-    {
-        projectedBeamContainer = new GameObject(string.Format("[{0}]PlayerObject_WorldPointer_BezierPointer_ProjectedBeamContainer", this.gameObject.name)).transform;
-        projectedBeamContainer.transform.parent = this.transform;
-        projectedBeamContainer.transform.localPosition = Vector3.zero;
-
-        projectedBeamForward = new GameObject(string.Format("[{0}]PlayerObject_WorldPointer_BezierPointer_ProjectedBeamForward", this.gameObject.name)).transform;
-        projectedBeamForward.transform.parent = projectedBeamContainer.transform;
-
-        projectedBeamJoint = new GameObject(string.Format("[{0}]PlayerObject_WorldPointer_BezierPointer_ProjectedBeamJoint", this.gameObject.name)).transform;
-        projectedBeamJoint.transform.parent = projectedBeamContainer.transform;
-        projectedBeamJoint.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
-
-        projectedBeamDown = new GameObject(string.Format("[{0}]PlayerObject_WorldPointer_BezierPointer_ProjectedBeamDown", this.gameObject.name)).transform;
-    }
-
-    private float GetForwardBeamLength()
-    {
-        float actualLength = pointerLength;
-        Ray pointerRaycast = new Ray(transform.position, transform.forward);
-        RaycastHit collidedWith;
-        bool hasRayHit = Physics.Raycast(pointerRaycast, out collidedWith);
-
-        //reset if beam not hitting or hitting new target
-        if (!hasRayHit || (pointerContactTarget && pointerContactTarget != collidedWith.transform))
+        protected override void TogglePointer(bool state)
         {
-            pointerContactDistance = 0f;
+            state = (pointerVisibility == pointerVisibilityStates.Always_On ? true : state);
+
+            projectedBeamForward.gameObject.SetActive(state);
+            projectedBeamJoint.gameObject.SetActive(state);
+            projectedBeamDown.SetActive(state);
         }
 
-        //check if beam has hit a new target
-        if (hasRayHit)
+        protected override void DisablePointerBeam(object sender, ControllerInteractionEventArgs e)
         {
-            pointerContactDistance = collidedWith.distance;
+            base.PointerSet();
+            base.DisablePointerBeam(sender, e);
+            TogglePointerCursor(false);
+            curvedBeam.TogglePoints(false);
         }
 
-        //adjust beam length if something is blocking it
-        if (hasRayHit && pointerContactDistance < pointerLength)
+        protected override void OnDestroy()
         {
-            actualLength = pointerContactDistance;
+            base.OnDestroy();
+            if (projectedBeamDown != null)
+            {
+                Destroy(projectedBeamDown);
+            }
+            if (pointerCursor != null)
+            {
+                Destroy(pointerCursor);
+            }
+            if (curvedBeam != null)
+            {
+                Destroy(curvedBeam);
+            }
+            if (projectedBeamContainer != null)
+            {
+                Destroy(projectedBeamContainer);
+            }
+            if (curvedBeamContainer != null)
+            {
+                Destroy(curvedBeamContainer);
+            }
         }
 
-        return actualLength;
-    }
+        private GameObject CreateCursor()
+        {
+            var cursorYOffset = 0.02f;
+            var cursor = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            cursor.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            cursor.GetComponent<MeshRenderer>().receiveShadows = false;
+            cursor.transform.localScale = new Vector3(pointerCursorRadius, cursorYOffset, pointerCursorRadius);
+            Destroy(cursor.GetComponent<CapsuleCollider>());
+            return cursor;
+        }
 
-    private void ProjectForwardBeam()
-    {
-        float setThicknes = 0.01f;
-        float setLength = GetForwardBeamLength();
-        //if the additional decimal isn't added then the beam position glitches
-        float beamPosition = setLength / (2 + 0.00001f);
+        private void TogglePointerCursor(bool state)
+        {
+            var pointerCursorState = (showPointerCursor && state ? showPointerCursor : false);
+            var playAreaCursorState = (showPlayAreaCursor && state ? showPlayAreaCursor : false);
+            pointerCursor.gameObject.SetActive(pointerCursorState);
+            base.TogglePointer(playAreaCursorState);
+        }
 
-        projectedBeamForward.transform.localScale = new Vector3(setThicknes, setThicknes, setLength);
-        projectedBeamForward.transform.localPosition = new Vector3(0f, 0f, beamPosition);
-        projectedBeamJoint.transform.localPosition = new Vector3(0f, 0f, setLength - (projectedBeamJoint.transform.localScale.z / 2));
-        projectedBeamContainer.transform.localRotation = Quaternion.identity;
-    }
+        private void InitProjectedBeams()
+        {
+            projectedBeamContainer = new GameObject(string.Format("[{0}]PlayerObject_WorldPointer_BezierPointer_ProjectedBeamContainer", this.gameObject.name));
+            projectedBeamContainer.transform.parent = this.transform;
+            projectedBeamContainer.transform.localPosition = Vector3.zero;
 
-    private void ProjectDownBeam()
-    {
-        projectedBeamDown.transform.position = new Vector3(projectedBeamJoint.transform.position.x, projectedBeamJoint.transform.position.y, projectedBeamJoint.transform.position.z);
+            projectedBeamForward = new GameObject(string.Format("[{0}]PlayerObject_WorldPointer_BezierPointer_ProjectedBeamForward", this.gameObject.name));
+            projectedBeamForward.transform.parent = projectedBeamContainer.transform;
 
-        Ray projectedBeamDownRaycast = new Ray(projectedBeamDown.transform.position, Vector3.down);
-        RaycastHit collidedWith;
-        bool downRayHit = Physics.Raycast(projectedBeamDownRaycast, out collidedWith);
+            projectedBeamJoint = new GameObject(string.Format("[{0}]PlayerObject_WorldPointer_BezierPointer_ProjectedBeamJoint", this.gameObject.name));
+            projectedBeamJoint.transform.parent = projectedBeamContainer.transform;
+            projectedBeamJoint.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
 
-        if (!downRayHit || (pointerContactTarget && pointerContactTarget != collidedWith.transform))
+            projectedBeamDown = new GameObject(string.Format("[{0}]PlayerObject_WorldPointer_BezierPointer_ProjectedBeamDown", this.gameObject.name));
+        }
+
+        private float GetForwardBeamLength()
+        {
+            var actualLength = pointerLength;
+            Ray pointerRaycast = new Ray(transform.position, transform.forward);
+            RaycastHit collidedWith;
+            var hasRayHit = Physics.Raycast(pointerRaycast, out collidedWith, pointerLength, ~layersToIgnore);
+
+            //reset if beam not hitting or hitting new target
+            if (!hasRayHit || (pointerContactTarget && pointerContactTarget != collidedWith.transform))
+            {
+                pointerContactDistance = 0f;
+            }
+
+            //check if beam has hit a new target
+            if (hasRayHit)
+            {
+                pointerContactDistance = collidedWith.distance;
+            }
+
+            //adjust beam length if something is blocking it
+            if (hasRayHit && pointerContactDistance < pointerLength)
+            {
+                actualLength = pointerContactDistance;
+            }
+
+            return actualLength;
+        }
+
+        private void ProjectForwardBeam()
+        {
+            var setThicknes = 0.01f;
+            var setLength = GetForwardBeamLength();
+            //if the additional decimal isn't added then the beam position glitches
+            var beamPosition = setLength / (2 + 0.00001f);
+
+            projectedBeamForward.transform.localScale = new Vector3(setThicknes, setThicknes, setLength);
+            projectedBeamForward.transform.localPosition = new Vector3(0f, 0f, beamPosition);
+            projectedBeamJoint.transform.localPosition = new Vector3(0f, 0f, setLength - (projectedBeamJoint.transform.localScale.z / 2));
+            projectedBeamContainer.transform.localRotation = Quaternion.identity;
+        }
+
+        private void ProjectDownBeam()
+        {
+            projectedBeamDown.transform.position = new Vector3(projectedBeamJoint.transform.position.x, projectedBeamJoint.transform.position.y, projectedBeamJoint.transform.position.z);
+
+            Ray projectedBeamDownRaycast = new Ray(projectedBeamDown.transform.position, Vector3.down);
+            RaycastHit collidedWith;
+            var downRayHit = Physics.Raycast(projectedBeamDownRaycast, out collidedWith, pointerLength, ~layersToIgnore);
+
+            if (!downRayHit || (pointerContactTarget && pointerContactTarget != collidedWith.transform))
+            {
+                if (pointerContactTarget != null)
+                {
+                    base.PointerOut();
+                }
+                pointerContactTarget = null;
+                destinationPosition = Vector3.zero;
+            }
+
+            if (downRayHit)
+            {
+                projectedBeamDown.transform.position = new Vector3(projectedBeamJoint.transform.position.x, projectedBeamJoint.transform.position.y - collidedWith.distance, projectedBeamJoint.transform.position.z);
+                projectedBeamDown.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+                pointerContactTarget = collidedWith.transform;
+                destinationPosition = projectedBeamDown.transform.position;
+
+                base.PointerIn();
+            }
+        }
+
+        private void SetPointerCursor()
         {
             if (pointerContactTarget != null)
             {
-                base.PointerOut();
+                TogglePointerCursor(true);
+                pointerCursor.transform.position = projectedBeamDown.transform.position;
+                base.SetPlayAreaCursorTransform(pointerCursor.transform.position);
+                UpdatePointerMaterial(pointerHitColor);
             }
-            pointerContactTarget = null;
-            destinationPosition = Vector3.zero;
+            else
+            {
+                TogglePointerCursor(false);
+                UpdatePointerMaterial(pointerMissColor);
+            }
         }
 
-        if (downRayHit)
+        private void DisplayCurvedBeam()
         {
-            projectedBeamDown.transform.position = new Vector3(projectedBeamJoint.transform.position.x, projectedBeamJoint.transform.position.y - collidedWith.distance, projectedBeamJoint.transform.position.z);
-            projectedBeamDown.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-            pointerContactTarget = collidedWith.transform;
-            destinationPosition = projectedBeamDown.transform.position;
+            Vector3[] beamPoints = new Vector3[]
+            {
+                this.transform.position,
+                projectedBeamJoint.transform.position + new Vector3(0f, beamCurveOffset, 0f),
+                projectedBeamDown.transform.position,
+                projectedBeamDown.transform.position,
+            };
 
-            base.PointerIn();
+            curvedBeam.SetPoints(beamPoints, pointerMaterial);
+            if (pointerVisibility != pointerVisibilityStates.Always_Off)
+            {
+                curvedBeam.TogglePoints(true);
+            }
         }
-    }
-
-    private void SetPointerCursor()
-    {
-        if (pointerContactTarget != null)
-        {
-            TogglePointerCursor(true);
-            pointerCursor.transform.position = projectedBeamDown.transform.position;
-            base.SetPlayAreaCursorTransform(pointerCursor.transform.position);
-            UpdatePointerMaterial(pointerHitColor);
-        } else
-        {
-            TogglePointerCursor(false);
-            UpdatePointerMaterial(pointerMissColor);
-        }
-    }
-
-    private void DisplayCurvedBeam()
-    {
-        Vector3[] beamPoints = new Vector3[]
-        {
-            this.transform.position,
-            projectedBeamJoint.transform.position + new Vector3(0f, beamCurveOffset, 0f),
-            projectedBeamDown.transform.position,
-            projectedBeamDown.transform.position,
-        };
-        curvedBeam.SetPoints(beamPoints, pointerMaterial);
-        curvedBeam.TogglePoints(true);
     }
 }

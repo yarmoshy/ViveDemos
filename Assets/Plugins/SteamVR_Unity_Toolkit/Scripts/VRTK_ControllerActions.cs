@@ -1,61 +1,79 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿namespace VRTK
+{
+    using UnityEngine;
+    using System.Collections;
 
-public class VRTK_ControllerActions : MonoBehaviour {
-    private bool controllerVisible = true;
-    private ushort hapticPulseStrength;
-    private int hapticPulseCountdown;
-
-    private uint controllerIndex;
-    private SteamVR_TrackedObject trackedController;
-    private SteamVR_Controller.Device device;
-    private ushort maxHapticVibration = 3999;
-
-    public bool IsControllerVisible()
+    public class VRTK_ControllerActions : MonoBehaviour
     {
-        return controllerVisible;
-    }
+        private bool controllerVisible = true;
+        private ushort hapticPulseStrength;
 
-    public void ToggleControllerModel(bool on, GameObject grabbedChildObject)
-    {
-        foreach (MeshRenderer renderer in this.GetComponentsInChildren<MeshRenderer>())
+        private uint controllerIndex;
+        private SteamVR_TrackedObject trackedController;
+        private SteamVR_Controller.Device device;
+        private ushort maxHapticVibration = 3999;
+
+        public bool IsControllerVisible()
         {
-            if (renderer.gameObject != grabbedChildObject && (grabbedChildObject == null || !renderer.transform.IsChildOf(grabbedChildObject.transform)))
-            {
-                renderer.enabled = on;
-            }
+            return controllerVisible;
         }
 
-        foreach (SkinnedMeshRenderer renderer in this.GetComponentsInChildren<SkinnedMeshRenderer>())
+        public void ToggleControllerModel(bool on, GameObject grabbedChildObject)
         {
-            if (renderer.gameObject != grabbedChildObject && (grabbedChildObject == null || !renderer.transform.IsChildOf(grabbedChildObject.transform)))
+            foreach (MeshRenderer renderer in this.GetComponentsInChildren<MeshRenderer>())
             {
-                renderer.enabled = on;
+                if (renderer.gameObject != grabbedChildObject && (grabbedChildObject == null || !renderer.transform.IsChildOf(grabbedChildObject.transform)))
+                {
+                    renderer.enabled = on;
+                }
             }
+
+            foreach (SkinnedMeshRenderer renderer in this.GetComponentsInChildren<SkinnedMeshRenderer>())
+            {
+                if (renderer.gameObject != grabbedChildObject && (grabbedChildObject == null || !renderer.transform.IsChildOf(grabbedChildObject.transform)))
+                {
+                    renderer.enabled = on;
+                }
+            }
+            controllerVisible = on;
         }
-        controllerVisible = on;
-    }
 
-    public void TriggerHapticPulse(int duration, ushort strength)
-    {
-        hapticPulseCountdown = duration;
-        hapticPulseStrength = (strength <= maxHapticVibration ? strength : maxHapticVibration);
-    }
-
-    private void Awake()
-    {
-        trackedController = GetComponent<SteamVR_TrackedObject>();
-    }
-
-    private void Update()
-    {
-        controllerIndex = (uint)trackedController.index;
-        device = SteamVR_Controller.Input((int)controllerIndex);
-
-        if (hapticPulseCountdown > 0)
+        public void TriggerHapticPulse(ushort strength)
         {
+            hapticPulseStrength = (strength <= maxHapticVibration ? strength : maxHapticVibration);
             device.TriggerHapticPulse(hapticPulseStrength);
-            hapticPulseCountdown -= 1;
+        }
+
+        public void TriggerHapticPulse(ushort strength, float duration, float pulseInterval)
+        {
+            hapticPulseStrength = (strength <= maxHapticVibration ? strength : maxHapticVibration);
+            StartCoroutine(Pulse(duration, hapticPulseStrength, pulseInterval));
+        }
+
+        private void Awake()
+        {
+            trackedController = GetComponent<SteamVR_TrackedObject>();
+        }
+
+        private void Update()
+        {
+            controllerIndex = (uint)trackedController.index;
+            device = SteamVR_Controller.Input((int)controllerIndex);
+        }
+
+        private IEnumerator Pulse(float duration, int hapticPulseStrength, float pulseInterval)
+        {
+            if (pulseInterval <= 0)
+            {
+                yield break;
+            }
+
+            while (duration > 0)
+            {
+                device.TriggerHapticPulse((ushort)hapticPulseStrength);
+                yield return new WaitForSeconds(pulseInterval);
+                duration -= pulseInterval;
+            }
         }
     }
 }

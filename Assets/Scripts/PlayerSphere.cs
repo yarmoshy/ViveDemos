@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using VRTK;
 
 public class PlayerSphere : VRTK_InteractableObject
 {
@@ -11,23 +12,34 @@ public class PlayerSphere : VRTK_InteractableObject
     public float maxBrakeTime = 1000.0f;
     public float minBrakeTime = 20.0f;
 
-    ArrayList brakingPressures = new ArrayList(); 
+    ArrayList brakingPressures = new ArrayList();
+    ArrayList touchingControllers = new ArrayList();
+    ArrayList deadControllers = new ArrayList();
+    Hashtable deadControllerMoveDistances = new Hashtable();
+    Hashtable deadControllerPreviousVector3s = new Hashtable();
+
     VRTK_ControllerActions controllerActions;
     private float strength = 0;
     private float distanceToGround;
     private bool reset = false;
     private bool boost = false;
+    private float minDeadControllerMoveDistance = 0.25f;
 
     public override void StartTouching(GameObject touchingObject)
     {
         base.StartTouching(touchingObject);
         if (!gameState.GetReady()) return;
+        if (!touchingControllers.Contains(touchingObject) && !deadControllers.Contains(touchingObject))
+        {
+            touchingControllers.Add(touchingObject);
+        }
+    }
 
-        controllerActions = touchingObject.GetComponent<VRTK_ControllerActions>();
-        Rigidbody prb = player.GetComponent<Rigidbody>();
-        Vector3 impact = touchingObject.transform.localPosition.normalized * touchForceMultiplier;
-        prb.AddForce(new Vector3 (impact.x, 0, impact.z));
-        controllerActions.TriggerHapticPulse(10, hapticFeedbackStrength);
+    public override void StopTouching(GameObject previousTouchingObject)
+    {
+        base.StopTouching(previousTouchingObject);
+        if (touchingControllers.Contains(previousTouchingObject))
+            touchingControllers.Remove(previousTouchingObject);
     }
 
     public void AddBraker(object sender)
@@ -76,6 +88,7 @@ public class PlayerSphere : VRTK_InteractableObject
     protected override void Update()
     {
         base.Update();
+        ProcessDeadControllers();
     }
 
     protected override void FixedUpdate()
@@ -85,6 +98,17 @@ public class PlayerSphere : VRTK_InteractableObject
         {
             DoResetPlayer();
         }
+        foreach (GameObject touchingObject in touchingControllers)
+        {
+            controllerActions = touchingObject.GetComponent<VRTK_ControllerActions>();
+            Rigidbody prb = player.GetComponent<Rigidbody>();
+            Vector3 impact = touchingObject.transform.localPosition.normalized * touchForceMultiplier;
+            prb.AddForce(new Vector3(impact.x, 0, impact.z));
+            controllerActions.TriggerHapticPulse(hapticFeedbackStrength);
+            deadControllers.Add(touchingObject);
+        }
+        touchingControllers.Clear();
+
         if (brakingPressures.Count > 0)
         {
             DoStop();
@@ -94,7 +118,7 @@ public class PlayerSphere : VRTK_InteractableObject
             Vector3 force = prb.velocity.normalized * 1;
             prb.AddForce(force, ForceMode.Impulse);
         }
-        
+
     }
 
     private void DoStop()
@@ -130,5 +154,36 @@ public class PlayerSphere : VRTK_InteractableObject
         prb.velocity = Vector3.zero;
         prb.angularVelocity = Vector3.zero;
         gameState.SetUnready();
+    }
+
+    private void ProcessDeadControllers()
+    {
+        ArrayList aliveControllers = new ArrayList();
+        foreach(GameObject deadController in deadControllers)
+        {
+            if (!deadControllerMoveDistances.ContainsKey(deadController))
+            {
+                deadControllerMoveDistances[deadController] = 0f;
+                deadControllerPreviousVector3s[deadController] = deadController.transform.localPosition;
+            } else
+            {
+                Vector3 newPosition = deadController.transform.localPosition;
+                float currentDistance = (float)deadControllerMoveDistances[deadController];
+                float newDistance = currentDistance + Mathf.Abs(Vector3.Distance(newPosition, (Vector3)deadControllerPreviousVector3s[deadController]));
+                deadControllerMoveDistances[deadController] = newDistance;
+                deadControllerPreviousVector3s[deadController] = newPosition;
+                if(newDistance > minDeadControllerMoveDistance)
+                {
+                    Debug.Log("newDistance = " + newDistance);
+                    aliveControllers.Add(deadController);
+                }
+            }
+        }
+        foreach(GameObject aliveController in aliveControllers)
+        {
+            deadControllers.Remove(aliveController);
+            deadControllerMoveDistances.Remove(aliveController);
+            deadControllerPreviousVector3s.Remove(aliveController);
+        }
     }
 }
