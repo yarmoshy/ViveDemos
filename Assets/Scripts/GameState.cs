@@ -7,7 +7,8 @@ public class GameState : MonoBehaviour {
     bool ready = false;
     public Vector3 defaultRestartLocation;
     public CheckPoint[] checkPoints;
-    private CheckPoint currentCheckPoint;
+    public CheckPoint currentCheckPoint;
+
 
     void Start()
     {
