@@ -63,6 +63,7 @@ public class PlayerSphere : VRTK_InteractableObject
     {
         boost = true;
         maxBoostMagnitude = -1;
+        highestVelocityMagnitude = 0;
     }
 
     public void BoostPlayer(float boostPower)
@@ -130,7 +131,9 @@ public class PlayerSphere : VRTK_InteractableObject
             DoStop();
         } else if (boost && (maxBoostMagnitude == -1 || prb.velocity.magnitude < maxBoostMagnitude))
         {
-            Vector3 force = prb.velocity.normalized * 1;
+            float multiplyer = 1f;
+            if (maxBoostMagnitude != -1 && maxBoostMagnitude - prb.velocity.magnitude < 1) multiplyer = maxBoostMagnitude - prb.velocity.magnitude;
+            Vector3 force = prb.velocity.normalized * multiplyer;
             prb.AddForce(force, ForceMode.Impulse);
         }
         if (prb.velocity.magnitude > highestVelocityMagnitude)
