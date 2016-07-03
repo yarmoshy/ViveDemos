@@ -12,7 +12,13 @@ public class PlayerCollider : MonoBehaviour {
         }
         if (col.gameObject.tag == "BoostPlatform")
         {
-            playerSphere.BoostPlayer();
+            if (col.gameObject.name.Contains("BoostPower:"))
+            {
+                playerSphere.BoostPlayer(float.Parse(col.gameObject.name.Substring("BoostPower:".Length)));
+            } else
+            {
+                playerSphere.BoostPlayer();
+            }
         }
     }
 

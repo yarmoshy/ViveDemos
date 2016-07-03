@@ -23,7 +23,9 @@ public class PlayerSphere : VRTK_InteractableObject
     private float distanceToGround;
     private bool reset = false;
     private bool boost = false;
+    private float maxBoostMagnitude;
     private float minDeadControllerMoveDistance = 0.25f;
+    private float highestVelocityMagnitude;
 
     public override void StartTouching(GameObject touchingObject)
     {
@@ -60,6 +62,14 @@ public class PlayerSphere : VRTK_InteractableObject
     public void BoostPlayer()
     {
         boost = true;
+        maxBoostMagnitude = -1;
+    }
+
+    public void BoostPlayer(float boostPower)
+    {
+        boost = true;
+        maxBoostMagnitude = boostPower;
+        highestVelocityMagnitude = 0;
     }
 
     public void UnboostPlayer()
@@ -98,9 +108,9 @@ public class PlayerSphere : VRTK_InteractableObject
         {
             DoResetPlayer();
         }
+        Rigidbody prb = player.GetComponent<Rigidbody>();
         if (!gameState.GetReady())
         {
-            Rigidbody prb = player.GetComponent<Rigidbody>();
             prb.velocity = Vector3.zero;
             prb.angularVelocity = Vector3.zero;
         }
@@ -108,7 +118,6 @@ public class PlayerSphere : VRTK_InteractableObject
         foreach (GameObject touchingObject in touchingControllers)
         {
             controllerActions = touchingObject.GetComponent<VRTK_ControllerActions>();
-            Rigidbody prb = player.GetComponent<Rigidbody>();
             Vector3 impact = touchingObject.transform.localPosition.normalized * touchForceMultiplier;
             prb.AddForce(new Vector3(impact.x, 0, impact.z));
             controllerActions.TriggerHapticPulse(hapticFeedbackStrength, 0.1f, 0.01f);
@@ -119,13 +128,16 @@ public class PlayerSphere : VRTK_InteractableObject
         if (brakingPressures.Count > 0)
         {
             DoStop();
-        } else if (boost)
+        } else if (boost && (maxBoostMagnitude == -1 || prb.velocity.magnitude < maxBoostMagnitude))
         {
-            Rigidbody prb = player.GetComponent<Rigidbody>();
             Vector3 force = prb.velocity.normalized * 1;
             prb.AddForce(force, ForceMode.Impulse);
         }
-
+        if (prb.velocity.magnitude > highestVelocityMagnitude)
+        {
+            highestVelocityMagnitude = prb.velocity.magnitude;
+            Debug.Log("highestVelocityMagnitude:" + highestVelocityMagnitude);
+        }
     }
 
     private void DoStop()
@@ -181,7 +193,7 @@ public class PlayerSphere : VRTK_InteractableObject
                 deadControllerPreviousVector3s[deadController] = newPosition;
                 if(newDistance > minDeadControllerMoveDistance)
                 {
-                    Debug.Log("newDistance = " + newDistance);
+                    //Debug.Log("newDistance = " + newDistance);
                     aliveControllers.Add(deadController);
                 }
             }

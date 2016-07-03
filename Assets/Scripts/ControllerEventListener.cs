@@ -44,64 +44,64 @@ public class ControllerEventListener : MonoBehaviour
 
     void DoTriggerPressed(object sender, ControllerInteractionEventArgs e)
     {
-        DebugLogger(e.controllerIndex, "TRIGGER", "pressed down", e);
+       // DebugLogger(e.controllerIndex, "TRIGGER", "pressed down", e);
         playerSphere.AddBraker(sender);
     }
 
     void DoTriggerReleased(object sender, ControllerInteractionEventArgs e)
     {
-        DebugLogger(e.controllerIndex, "TRIGGER", "released", e);
+       // DebugLogger(e.controllerIndex, "TRIGGER", "released", e);
         playerSphere.RemoveBraker(sender);
     }
 
     void DoTriggerAxisChanged(object sender, ControllerInteractionEventArgs e)
     {
-        DebugLogger(e.controllerIndex, "TRIGGER", "axis changed", e);
+       // DebugLogger(e.controllerIndex, "TRIGGER", "axis changed", e);
     }
 
     void DoApplicationMenuPressed(object sender, ControllerInteractionEventArgs e)
     {
-        DebugLogger(e.controllerIndex, "APPLICATION MENU", "pressed down", e);
+      // DebugLogger(e.controllerIndex, "APPLICATION MENU", "pressed down", e);
         playerSphere.ResetPlayer();
     }
 
     void DoApplicationMenuReleased(object sender, ControllerInteractionEventArgs e)
     {
-        DebugLogger(e.controllerIndex, "APPLICATION MENU", "released", e);
+      // DebugLogger(e.controllerIndex, "APPLICATION MENU", "released", e);
     }
 
     void DoGripPressed(object sender, ControllerInteractionEventArgs e)
     {
-        DebugLogger(e.controllerIndex, "GRIP", "pressed down", e);
+      // DebugLogger(e.controllerIndex, "GRIP", "pressed down", e);
     }
 
     void DoGripReleased(object sender, ControllerInteractionEventArgs e)
     {
-        DebugLogger(e.controllerIndex, "GRIP", "released", e);
+      // DebugLogger(e.controllerIndex, "GRIP", "released", e);
     }
 
     void DoTouchpadPressed(object sender, ControllerInteractionEventArgs e)
     {
-        DebugLogger(e.controllerIndex, "TOUCHPAD", "pressed down", e);
+      // DebugLogger(e.controllerIndex, "TOUCHPAD", "pressed down", e);
     }
 
     void DoTouchpadReleased(object sender, ControllerInteractionEventArgs e)
     {
-        DebugLogger(e.controllerIndex, "TOUCHPAD", "released", e);
+      // DebugLogger(e.controllerIndex, "TOUCHPAD", "released", e);
     }
 
     void DoTouchpadTouchStart(object sender, ControllerInteractionEventArgs e)
     {
-        DebugLogger(e.controllerIndex, "TOUCHPAD", "touched", e);
+      // DebugLogger(e.controllerIndex, "TOUCHPAD", "touched", e);
     }
 
     void DoTouchpadTouchEnd(object sender, ControllerInteractionEventArgs e)
     {
-        DebugLogger(e.controllerIndex, "TOUCHPAD", "untouched", e);
+      // DebugLogger(e.controllerIndex, "TOUCHPAD", "untouched", e);
     }
 
     void DoTouchpadAxisChanged(object sender, ControllerInteractionEventArgs e)
     {
-        DebugLogger(e.controllerIndex, "TOUCHPAD", "axis changed", e);
+      // DebugLogger(e.controllerIndex, "TOUCHPAD", "axis changed", e);
     }
 }

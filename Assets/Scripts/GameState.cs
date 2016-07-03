@@ -21,6 +21,7 @@ public class GameState : MonoBehaviour {
                 checkPoint.gameObject.SetActive(false);
             i++;
         }
+        if (currentCheckPoint) SetCurrentCheckPoint(currentCheckPoint);
     }
 
     public void SetReady()
