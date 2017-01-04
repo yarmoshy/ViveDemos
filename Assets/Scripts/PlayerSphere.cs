@@ -61,9 +61,7 @@ public class PlayerSphere : VRTK_InteractableObject
 
     public void BoostPlayer()
     {
-        boost = true;
-        maxBoostMagnitude = -1;
-        highestVelocityMagnitude = 0;
+        BoostPlayer(-1);
     }
 
     public void BoostPlayer(float boostPower)
