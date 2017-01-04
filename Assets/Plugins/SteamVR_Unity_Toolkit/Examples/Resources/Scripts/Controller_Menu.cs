@@ -1,52 +1,54 @@
-﻿using UnityEngine;
-using System.Collections;
-using VRTK;
+﻿namespace VRTK.Examples
+{
+    using UnityEngine;
 
-public class Controller_Menu : MonoBehaviour {
-    public GameObject menuObject;
-
-    private GameObject clonedMenuObject;
-
-    private bool menuInit = false;
-    private bool menuActive = false;
-
-    void Start()
-    {        
-        GetComponent<VRTK_ControllerEvents>().AliasMenuOn += new ControllerInteractionEventHandler(DoMenuOn);
-        GetComponent<VRTK_ControllerEvents>().AliasMenuOff += new ControllerInteractionEventHandler(DoMenuOff);
-        menuInit = false;
-        menuActive = false;
-    }
-
-    void InitMenu()
+    public class Controller_Menu : MonoBehaviour
     {
-        clonedMenuObject = Instantiate(menuObject, this.transform.position, Quaternion.identity) as GameObject;
-        clonedMenuObject.SetActive(true);
-        menuInit = true;
-    }
+        public GameObject menuObject;
 
-    void DoMenuOn(object sender, ControllerInteractionEventArgs e)
-    {
-        if (!menuInit)
+        private GameObject clonedMenuObject;
+
+        private bool menuInit = false;
+        private bool menuActive = false;
+
+        private void Start()
         {
-            InitMenu();
+            GetComponent<VRTK_ControllerEvents>().AliasMenuOn += new ControllerInteractionEventHandler(DoMenuOn);
+            GetComponent<VRTK_ControllerEvents>().AliasMenuOff += new ControllerInteractionEventHandler(DoMenuOff);
+            menuInit = false;
+            menuActive = false;
         }
-        clonedMenuObject.SetActive(true);
-        menuActive = true;
-    }
 
-    void DoMenuOff(object sender, ControllerInteractionEventArgs e)
-    {
-        clonedMenuObject.SetActive(false);
-        menuActive = false;
-    }
-
-    void Update()
-    {
-        if(menuActive)
+        private void InitMenu()
         {
-            clonedMenuObject.transform.rotation = this.transform.rotation;
-            clonedMenuObject.transform.position = this.transform.position;
+            clonedMenuObject = Instantiate(menuObject, transform.position, Quaternion.identity) as GameObject;
+            clonedMenuObject.SetActive(true);
+            menuInit = true;
+        }
+
+        private void DoMenuOn(object sender, ControllerInteractionEventArgs e)
+        {
+            if (!menuInit)
+            {
+                InitMenu();
+            }
+            clonedMenuObject.SetActive(true);
+            menuActive = true;
+        }
+
+        private void DoMenuOff(object sender, ControllerInteractionEventArgs e)
+        {
+            clonedMenuObject.SetActive(false);
+            menuActive = false;
+        }
+
+        private void Update()
+        {
+            if (menuActive)
+            {
+                clonedMenuObject.transform.rotation = transform.rotation;
+                clonedMenuObject.transform.position = transform.position;
+            }
         }
     }
 }

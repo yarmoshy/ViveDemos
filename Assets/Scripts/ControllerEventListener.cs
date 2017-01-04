@@ -21,8 +21,8 @@ public class ControllerEventListener : MonoBehaviour
 
         GetComponent<VRTK_ControllerEvents>().TriggerAxisChanged += new ControllerInteractionEventHandler(DoTriggerAxisChanged);
 
-        GetComponent<VRTK_ControllerEvents>().ApplicationMenuPressed += new ControllerInteractionEventHandler(DoApplicationMenuPressed);
-        GetComponent<VRTK_ControllerEvents>().ApplicationMenuReleased += new ControllerInteractionEventHandler(DoApplicationMenuReleased);
+        GetComponent<VRTK_ControllerEvents>().ButtonOnePressed += new ControllerInteractionEventHandler(DoApplicationMenuPressed);
+        GetComponent<VRTK_ControllerEvents>().ButtonOneReleased += new ControllerInteractionEventHandler(DoApplicationMenuReleased);
 
         GetComponent<VRTK_ControllerEvents>().GripPressed += new ControllerInteractionEventHandler(DoGripPressed);
         GetComponent<VRTK_ControllerEvents>().GripReleased += new ControllerInteractionEventHandler(DoGripReleased);
@@ -44,13 +44,13 @@ public class ControllerEventListener : MonoBehaviour
 
     void DoTriggerPressed(object sender, ControllerInteractionEventArgs e)
     {
-       // DebugLogger(e.controllerIndex, "TRIGGER", "pressed down", e);
+        DebugLogger(e.controllerIndex, "TRIGGER", "pressed down", e);
         playerSphere.AddBraker(sender);
     }
 
     void DoTriggerReleased(object sender, ControllerInteractionEventArgs e)
     {
-       // DebugLogger(e.controllerIndex, "TRIGGER", "released", e);
+        DebugLogger(e.controllerIndex, "TRIGGER", "released", e);
         playerSphere.RemoveBraker(sender);
     }
 
@@ -61,7 +61,7 @@ public class ControllerEventListener : MonoBehaviour
 
     void DoApplicationMenuPressed(object sender, ControllerInteractionEventArgs e)
     {
-      // DebugLogger(e.controllerIndex, "APPLICATION MENU", "pressed down", e);
+       DebugLogger(e.controllerIndex, "APPLICATION MENU", "pressed down", e);
         playerSphere.ResetPlayer();
     }
 

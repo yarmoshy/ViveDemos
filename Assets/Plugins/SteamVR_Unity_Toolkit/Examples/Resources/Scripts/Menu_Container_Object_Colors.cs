@@ -1,20 +1,21 @@
-﻿using UnityEngine;
-using System.Collections;
-using VRTK;
-
-public class Menu_Container_Object_Colors : VRTK_InteractableObject
+﻿namespace VRTK.Examples
 {
-    protected override void Start()
-    {
-        base.Start();
-        SetSelectedColor(Color.red);
-    }
+    using UnityEngine;
 
-    public void SetSelectedColor(Color color)
+    public class Menu_Container_Object_Colors : VRTK_InteractableObject
     {
-        foreach(Menu_Object_Spawner menuObjectSpawner in this.gameObject.GetComponentsInChildren<Menu_Object_Spawner>())
+        public void SetSelectedColor(Color color)
         {
-            menuObjectSpawner.SetSelectedColor(color);
+            foreach (Menu_Object_Spawner menuObjectSpawner in gameObject.GetComponentsInChildren<Menu_Object_Spawner>())
+            {
+                menuObjectSpawner.SetSelectedColor(color);
+            }
+        }
+
+        protected void Start()
+        {
+            SetSelectedColor(Color.red);
+            SaveCurrentState();
         }
     }
 }

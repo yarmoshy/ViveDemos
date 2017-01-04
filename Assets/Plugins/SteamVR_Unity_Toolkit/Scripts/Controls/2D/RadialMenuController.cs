@@ -1,72 +1,138 @@
 namespace VRTK
 {
     using UnityEngine;
-    using System.Collections;
 
     // Radial Menu input from Vive Controller
-    [RequireComponent (typeof(RadialMenu))]
-    public class RadialMenuController : MonoBehaviour {
-
-        RadialMenu menu;
+    [RequireComponent(typeof(RadialMenu))]
+    public class RadialMenuController : MonoBehaviour
+    {
         public VRTK_ControllerEvents events;
 
-        void Start () {
+        protected RadialMenu menu;
+        private float currentAngle; //Keep track of angle for when we click
+        private bool touchpadTouched;
+
+        private void Awake()
+        {
             menu = GetComponent<RadialMenu>();
-            if(events == null)
+
+            Initialize();
+        }
+
+        protected virtual void Initialize()
+        {
+            if (events == null)
             {
                 events = GetComponentInParent<VRTK_ControllerEvents>();
             }
+        }
+
+        protected virtual void OnEnable()
+        {
             if (events == null)
             {
                 Debug.LogError("The radial menu must be a child of the controller or be set in the inspector!");
+                return;
             }
             else
-            {   //Start listening for controller events
+            {
                 events.TouchpadPressed += new ControllerInteractionEventHandler(DoTouchpadClicked);
                 events.TouchpadReleased += new ControllerInteractionEventHandler(DoTouchpadUnclicked);
                 events.TouchpadTouchStart += new ControllerInteractionEventHandler(DoTouchpadTouched);
                 events.TouchpadTouchEnd += new ControllerInteractionEventHandler(DoTouchpadUntouched);
                 events.TouchpadAxisChanged += new ControllerInteractionEventHandler(DoTouchpadAxisChanged);
+
+                menu.FireHapticPulse += new HapticPulseEventHandler(AttemptHapticPulse);
             }
         }
 
-        float currentAngle; //Keep track of angle for when we click
+        protected virtual void OnDisable()
+        {
+            events.TouchpadPressed -= new ControllerInteractionEventHandler(DoTouchpadClicked);
+            events.TouchpadReleased -= new ControllerInteractionEventHandler(DoTouchpadUnclicked);
+            events.TouchpadTouchStart -= new ControllerInteractionEventHandler(DoTouchpadTouched);
+            events.TouchpadTouchEnd -= new ControllerInteractionEventHandler(DoTouchpadUntouched);
+            events.TouchpadAxisChanged -= new ControllerInteractionEventHandler(DoTouchpadAxisChanged);
 
-        void DoTouchpadClicked(object sender, ControllerInteractionEventArgs e)
+            menu.FireHapticPulse -= new HapticPulseEventHandler(AttemptHapticPulse);
+        }
+
+        protected void DoClickButton(object sender = null) // The optional argument reduces the need for middleman functions in subclasses whose events likely pass object sender
         {
             menu.ClickButton(currentAngle);
         }
 
-        void DoTouchpadUnclicked(object sender, ControllerInteractionEventArgs e)
+        protected void DoUnClickButton(object sender = null)
         {
             menu.UnClickButton(currentAngle);
         }
 
-        void DoTouchpadTouched(object sender, ControllerInteractionEventArgs e)
+        protected void DoShowMenu(float initialAngle, object sender = null)
         {
             menu.ShowMenu();
+            DoChangeAngle(initialAngle); // Needed to register initial touch position before the touchpad axis actually changes
         }
 
-        void DoTouchpadUntouched(object sender, ControllerInteractionEventArgs e)
+        protected void DoHideMenu(bool force, object sender = null)
         {
             menu.StopTouching();
-            menu.HideMenu(false);
+            menu.HideMenu(force);
         }
 
-        //Touchpad finger moved position
-        void DoTouchpadAxisChanged(object sender, ControllerInteractionEventArgs e)
+        protected void DoChangeAngle(float angle, object sender = null)
         {
-            //Convert Touchpad Vector2 to Angle (0 to 360)
-            float angle = Mathf.Atan2(e.touchpadAxis.y, e.touchpadAxis.x) * Mathf.Rad2Deg;
-            angle = 90.0f - angle;
-            if (angle < 0)
-            {
-                angle += 360.0f;
-            }    
-            currentAngle = 360 - angle;
+            currentAngle = angle;
 
             menu.HoverButton(currentAngle);
         }
 
+        protected virtual void AttemptHapticPulse(float strength)
+        {
+            var controllerActions = GetComponentInParent<VRTK_ControllerActions>();
+            if (controllerActions)
+            {
+                controllerActions.TriggerHapticPulse(strength);
+            }
+        }
+
+        #region Private Controller Listeners
+
+        private void DoTouchpadClicked(object sender, ControllerInteractionEventArgs e)
+        {
+            DoClickButton();
+        }
+
+        private void DoTouchpadUnclicked(object sender, ControllerInteractionEventArgs e)
+        {
+            DoUnClickButton();
+        }
+
+        private void DoTouchpadTouched(object sender, ControllerInteractionEventArgs e)
+        {
+            touchpadTouched = true;
+            DoShowMenu(CalculateAngle(e));
+        }
+
+        private void DoTouchpadUntouched(object sender, ControllerInteractionEventArgs e)
+        {
+            touchpadTouched = false;
+            DoHideMenu(false);
+        }
+
+        //Touchpad finger moved position
+        private void DoTouchpadAxisChanged(object sender, ControllerInteractionEventArgs e)
+        {
+            if (touchpadTouched)
+            {
+                DoChangeAngle(CalculateAngle(e));
+            }
+        }
+
+        #endregion Private Controller Listeners
+
+        private float CalculateAngle(ControllerInteractionEventArgs e)
+        {
+            return 360 - e.touchpadAngle;
+        }
     }
 }

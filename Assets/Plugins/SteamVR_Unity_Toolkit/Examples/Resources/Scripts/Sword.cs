@@ -1,41 +1,45 @@
-﻿using UnityEngine;
-using System.Collections;
-using VRTK;
-
-public class Sword : VRTK_InteractableObject
+﻿namespace VRTK.Examples
 {
-    private VRTK_ControllerActions controllerActions;
-    private VRTK_ControllerEvents controllerEvents;
-    private float impactMagnifier = 120f;
-    private float collisionForce = 0f;
+    using UnityEngine;
 
-    public float CollisionForce()
+    public class Sword : VRTK_InteractableObject
     {
-        return collisionForce;
-    }
+        private VRTK_ControllerActions controllerActions;
+        private VRTK_ControllerEvents controllerEvents;
+        private float impactMagnifier = 120f;
+        private float collisionForce = 0f;
+        private float maxCollisionForce = 4000f;
 
-    public override void Grabbed(GameObject grabbingObject)
-    {
-        base.Grabbed(grabbingObject);
-        controllerActions = grabbingObject.GetComponent<VRTK_ControllerActions>();
-        controllerEvents = grabbingObject.GetComponent<VRTK_ControllerEvents>();
-    }
-
-    protected override void Awake()
-    {
-        base.Awake();
-        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (controllerActions && controllerEvents && IsGrabbed())
+        public float CollisionForce()
         {
-            collisionForce = controllerEvents.GetVelocity().magnitude * impactMagnifier;
-            controllerActions.TriggerHapticPulse((ushort)collisionForce, 0.5f, 0.01f);
-        } else
+            return collisionForce;
+        }
+
+        public override void Grabbed(GameObject grabbingObject)
         {
-            collisionForce = collision.relativeVelocity.magnitude * impactMagnifier;
+            base.Grabbed(grabbingObject);
+            controllerActions = grabbingObject.GetComponent<VRTK_ControllerActions>();
+            controllerEvents = grabbingObject.GetComponent<VRTK_ControllerEvents>();
+        }
+
+        protected override void Awake()
+        {
+            base.Awake();
+            interactableRigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (controllerActions && controllerEvents && IsGrabbed())
+            {
+                collisionForce = controllerEvents.GetVelocity().magnitude * impactMagnifier;
+                var hapticStrength = collisionForce / maxCollisionForce;
+                controllerActions.TriggerHapticPulse(hapticStrength, 0.5f, 0.01f);
+            }
+            else
+            {
+                collisionForce = collision.relativeVelocity.magnitude * impactMagnifier;
+            }
         }
     }
 }

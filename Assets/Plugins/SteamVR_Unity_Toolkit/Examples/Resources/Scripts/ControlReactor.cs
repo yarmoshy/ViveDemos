@@ -1,15 +1,20 @@
-﻿using UnityEngine;
-using VRTK;
+﻿namespace VRTK.Examples
+{
+    using UnityEngine;
 
-public class ControlReactor : MonoBehaviour {
-    public TextMesh go;
+    public class ControlReactor : MonoBehaviour
+    {
+        public TextMesh go;
 
-    void Start() {
-        GetComponent<VRTK_Control>().OnValueChanged += handleChange;
-        go.text = GetComponent<VRTK_Control>().getValue().ToString();
-    }
+        private void Start()
+        {
+            GetComponent<VRTK_Control>().defaultEvents.OnValueChanged.AddListener(HandleChange);
+            HandleChange(GetComponent<VRTK_Control>().GetValue(), GetComponent<VRTK_Control>().GetNormalizedValue());
+        }
 
-    private void handleChange(float value) {
-        go.text = value.ToString();
+        private void HandleChange(float value, float normalizedValue)
+        {
+            go.text = value.ToString() + "(" + normalizedValue.ToString() + "%)";
+        }
     }
 }

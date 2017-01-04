@@ -84,12 +84,11 @@ public class PlayerSphere : VRTK_InteractableObject
     protected override void Awake()
     {
         base.Awake();
-        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        interactableRigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
     }
 
-    protected override void Start()
+    protected void Start()
     {
-        base.Start();
         MeshCollider collider = GetComponent<MeshCollider>();
         distanceToGround = collider.bounds.extents.y;
     }

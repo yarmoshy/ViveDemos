@@ -1,28 +1,31 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿namespace VRTK.Examples.Archery
+{
+    using UnityEngine;
 
-public class Follow : MonoBehaviour {
-    public bool followPosition;
-    public bool followRotation;
-    public Transform target;
-
-    private void Update()
+    public class Follow : MonoBehaviour
     {
-        if (target != null)
-        {
-            if (followRotation)
-            {
-                transform.rotation = target.rotation;
-            }
+        public bool followPosition;
+        public bool followRotation;
+        public Transform target;
 
-            if (followPosition)
-            {
-                transform.position = target.position;
-            }
-        }
-        else
+        private void Update()
         {
-            Debug.LogError("No follow target defined!");
+            if (target != null)
+            {
+                if (followRotation)
+                {
+                    transform.rotation = target.rotation;
+                }
+
+                if (followPosition)
+                {
+                    transform.position = target.position;
+                }
+            }
+            else
+            {
+                Debug.LogError("No follow target defined!");
+            }
         }
     }
 }

@@ -1,13 +1,16 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿namespace VRTK.Examples.Archery
+{
+    using UnityEngine;
 
-public class BowAnimation : MonoBehaviour {
-    public Animation animationTimeline;
-
-    public void SetFrame(float frame)
+    public class BowAnimation : MonoBehaviour
     {
-        animationTimeline["BowPullAnimation"].speed = 0;
-        animationTimeline["BowPullAnimation"].time = frame;
-        animationTimeline.Play("BowPullAnimation");
+        public Animation animationTimeline;
+
+        public void SetFrame(float frame)
+        {
+            animationTimeline["BowPullAnimation"].speed = 0;
+            animationTimeline["BowPullAnimation"].time = frame;
+            animationTimeline.Play("BowPullAnimation");
+        }
     }
 }

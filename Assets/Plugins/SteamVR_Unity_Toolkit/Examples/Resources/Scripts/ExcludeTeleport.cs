@@ -1,5 +1,8 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿namespace VRTK.Examples
+{
+    using UnityEngine;
 
-public class ExcludeTeleport : MonoBehaviour {
+    public class ExcludeTeleport : MonoBehaviour
+    {
+    }
 }
