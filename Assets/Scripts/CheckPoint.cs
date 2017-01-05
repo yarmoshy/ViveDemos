@@ -1,5 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CheckPoint : MonoBehaviour {
+namespace Game
+{
+    public class CheckPoint : MonoBehaviour
+    {
+    }
 }

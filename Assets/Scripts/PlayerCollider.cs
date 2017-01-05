@@ -1,44 +1,49 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerCollider : MonoBehaviour {
-    public PlayerSphere playerSphere;
-
-    void OnCollisionEnter(Collision col)
+namespace Game
+{
+    public class PlayerCollider : MonoBehaviour
     {
-        if (col.gameObject.name == "Terrain")
+        public PlayerSphere playerSphere;
+
+        void OnCollisionEnter(Collision col)
         {
-            playerSphere.ResetPlayer();
-        }
-        if (col.gameObject.tag == "BoostPlatform")
-        {
-            if (col.gameObject.name.Contains("BoostPower:"))
+            if (col.gameObject.name == "Terrain")
             {
-                playerSphere.BoostPlayer(float.Parse(col.gameObject.name.Substring("BoostPower:".Length)));
-            } else
+                playerSphere.ResetPlayer();
+            }
+            if (col.gameObject.tag == "BoostPlatform")
             {
-                playerSphere.BoostPlayer();
+                if (col.gameObject.name.Contains("BoostPower:"))
+                {
+                    playerSphere.BoostPlayer(float.Parse(col.gameObject.name.Substring("BoostPower:".Length)));
+                }
+                else
+                {
+                    playerSphere.BoostPlayer();
+                }
             }
         }
-    }
 
-    void OnTriggerEnter(Collider col)
-    {
-        if (col.gameObject.tag == "Checkpoint")
+        void OnTriggerEnter(Collider col)
         {
-            playerSphere.SetCheckpoint(col.gameObject.GetComponent<CheckPoint>());
+            if (col.gameObject.tag == "Checkpoint")
+            {
+                playerSphere.SetCheckpoint(col.gameObject.GetComponent<CheckPoint>());
+            }
         }
-    }
 
-    void OnCollisionExit(Collision col)
-    {
-        if (col.gameObject.tag == "BoostPlatform")
+        void OnCollisionExit(Collision col)
         {
-            playerSphere.UnboostPlayer();
-        }
-        if (col.gameObject.tag == "RemoveAfterCollision")
-        {
-            col.gameObject.SetActive(false);
+            if (col.gameObject.tag == "BoostPlatform")
+            {
+                playerSphere.UnboostPlayer();
+            }
+            if (col.gameObject.tag == "RemoveAfterCollision")
+            {
+                col.gameObject.SetActive(false);
+            }
         }
     }
 }

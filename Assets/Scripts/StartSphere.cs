@@ -2,25 +2,28 @@
 using System.Collections;
 using VRTK;
 
-public class StartSphere : VRTK_InteractableObject
+namespace Game
 {
-    public GameState gameState;
-
-    public override void StopUsing(GameObject usingObject)
+    public class StartSphere : VRTK_InteractableObject
     {
-        base.StopUsing(usingObject);
-        gameState.SetReady();
-    }
+        public GameState gameState;
 
-    new void Update()
-    {
-        if (gameState.GetReady())
+        public override void StopUsing(GameObject usingObject)
         {
-            GetComponent<MeshRenderer>().enabled = false;
+            base.StopUsing(usingObject);
+            gameState.SetReady();
         }
-        else
+
+        new void Update()
         {
-            GetComponent<MeshRenderer>().enabled = true;
+            if (gameState.GetReady())
+            {
+                GetComponent<MeshRenderer>().enabled = false;
+            }
+            else
+            {
+                GetComponent<MeshRenderer>().enabled = true;
+            }
         }
     }
 }

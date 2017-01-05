@@ -2,106 +2,109 @@
 using System.Collections;
 using VRTK;
 
-public class ControllerEventListener : MonoBehaviour
+namespace Game
 {
-    public PlayerSphere playerSphere;
-    public GameState gameState;
-    // Use this for initialization
-    void Start()
+    public class ControllerEventListener : MonoBehaviour
     {
-        if (GetComponent<VRTK_ControllerEvents>() == null)
+        public PlayerSphere playerSphere;
+        public GameState gameState;
+        // Use this for initialization
+        void Start()
         {
-            Debug.LogError("ControllerEventListener is required to be attached to a SteamVR Controller that has the VRTK_ControllerEvents script attached to it");
-            return;
+            if (GetComponent<VRTK_ControllerEvents>() == null)
+            {
+                Debug.LogError("ControllerEventListener is required to be attached to a SteamVR Controller that has the VRTK_ControllerEvents script attached to it");
+                return;
+            }
+
+            //Setup controller event listeners
+            GetComponent<VRTK_ControllerEvents>().TriggerPressed += new ControllerInteractionEventHandler(DoTriggerPressed);
+            GetComponent<VRTK_ControllerEvents>().TriggerReleased += new ControllerInteractionEventHandler(DoTriggerReleased);
+
+            GetComponent<VRTK_ControllerEvents>().TriggerAxisChanged += new ControllerInteractionEventHandler(DoTriggerAxisChanged);
+
+            GetComponent<VRTK_ControllerEvents>().ButtonOnePressed += new ControllerInteractionEventHandler(DoApplicationMenuPressed);
+            GetComponent<VRTK_ControllerEvents>().ButtonOneReleased += new ControllerInteractionEventHandler(DoApplicationMenuReleased);
+
+            GetComponent<VRTK_ControllerEvents>().GripPressed += new ControllerInteractionEventHandler(DoGripPressed);
+            GetComponent<VRTK_ControllerEvents>().GripReleased += new ControllerInteractionEventHandler(DoGripReleased);
+
+            GetComponent<VRTK_ControllerEvents>().TouchpadPressed += new ControllerInteractionEventHandler(DoTouchpadPressed);
+            GetComponent<VRTK_ControllerEvents>().TouchpadReleased += new ControllerInteractionEventHandler(DoTouchpadReleased);
+
+            GetComponent<VRTK_ControllerEvents>().TouchpadTouchStart += new ControllerInteractionEventHandler(DoTouchpadTouchStart);
+            GetComponent<VRTK_ControllerEvents>().TouchpadTouchEnd += new ControllerInteractionEventHandler(DoTouchpadTouchEnd);
+
+            GetComponent<VRTK_ControllerEvents>().TouchpadAxisChanged += new ControllerInteractionEventHandler(DoTouchpadAxisChanged);
         }
 
-        //Setup controller event listeners
-        GetComponent<VRTK_ControllerEvents>().TriggerPressed += new ControllerInteractionEventHandler(DoTriggerPressed);
-        GetComponent<VRTK_ControllerEvents>().TriggerReleased += new ControllerInteractionEventHandler(DoTriggerReleased);
+        void DebugLogger(uint index, string button, string action, ControllerInteractionEventArgs e)
+        {
+            Debug.Log("Controller on index '" + index + "' " + button + " has been " + action
+                    + " with a pressure of " + e.buttonPressure + " / trackpad axis at: " + e.touchpadAxis + " (" + e.touchpadAngle + " degrees)");
+        }
 
-        GetComponent<VRTK_ControllerEvents>().TriggerAxisChanged += new ControllerInteractionEventHandler(DoTriggerAxisChanged);
+        void DoTriggerPressed(object sender, ControllerInteractionEventArgs e)
+        {
+            DebugLogger(e.controllerIndex, "TRIGGER", "pressed down", e);
+            playerSphere.AddBraker(sender);
+        }
 
-        GetComponent<VRTK_ControllerEvents>().ButtonOnePressed += new ControllerInteractionEventHandler(DoApplicationMenuPressed);
-        GetComponent<VRTK_ControllerEvents>().ButtonOneReleased += new ControllerInteractionEventHandler(DoApplicationMenuReleased);
+        void DoTriggerReleased(object sender, ControllerInteractionEventArgs e)
+        {
+            DebugLogger(e.controllerIndex, "TRIGGER", "released", e);
+            playerSphere.RemoveBraker(sender);
+        }
 
-        GetComponent<VRTK_ControllerEvents>().GripPressed += new ControllerInteractionEventHandler(DoGripPressed);
-        GetComponent<VRTK_ControllerEvents>().GripReleased += new ControllerInteractionEventHandler(DoGripReleased);
+        void DoTriggerAxisChanged(object sender, ControllerInteractionEventArgs e)
+        {
+            // DebugLogger(e.controllerIndex, "TRIGGER", "axis changed", e);
+        }
 
-        GetComponent<VRTK_ControllerEvents>().TouchpadPressed += new ControllerInteractionEventHandler(DoTouchpadPressed);
-        GetComponent<VRTK_ControllerEvents>().TouchpadReleased += new ControllerInteractionEventHandler(DoTouchpadReleased);
+        void DoApplicationMenuPressed(object sender, ControllerInteractionEventArgs e)
+        {
+            DebugLogger(e.controllerIndex, "APPLICATION MENU", "pressed down", e);
+            playerSphere.ResetPlayer();
+        }
 
-        GetComponent<VRTK_ControllerEvents>().TouchpadTouchStart += new ControllerInteractionEventHandler(DoTouchpadTouchStart);
-        GetComponent<VRTK_ControllerEvents>().TouchpadTouchEnd += new ControllerInteractionEventHandler(DoTouchpadTouchEnd);
+        void DoApplicationMenuReleased(object sender, ControllerInteractionEventArgs e)
+        {
+            // DebugLogger(e.controllerIndex, "APPLICATION MENU", "released", e);
+        }
 
-        GetComponent<VRTK_ControllerEvents>().TouchpadAxisChanged += new ControllerInteractionEventHandler(DoTouchpadAxisChanged);
-    }
+        void DoGripPressed(object sender, ControllerInteractionEventArgs e)
+        {
+            // DebugLogger(e.controllerIndex, "GRIP", "pressed down", e);
+        }
 
-    void DebugLogger(uint index, string button, string action, ControllerInteractionEventArgs e)
-    {
-        Debug.Log("Controller on index '" + index + "' " + button + " has been " + action
-                + " with a pressure of " + e.buttonPressure + " / trackpad axis at: " + e.touchpadAxis + " (" + e.touchpadAngle + " degrees)");
-    }
+        void DoGripReleased(object sender, ControllerInteractionEventArgs e)
+        {
+            // DebugLogger(e.controllerIndex, "GRIP", "released", e);
+        }
 
-    void DoTriggerPressed(object sender, ControllerInteractionEventArgs e)
-    {
-        DebugLogger(e.controllerIndex, "TRIGGER", "pressed down", e);
-        playerSphere.AddBraker(sender);
-    }
+        void DoTouchpadPressed(object sender, ControllerInteractionEventArgs e)
+        {
+            // DebugLogger(e.controllerIndex, "TOUCHPAD", "pressed down", e);
+        }
 
-    void DoTriggerReleased(object sender, ControllerInteractionEventArgs e)
-    {
-        DebugLogger(e.controllerIndex, "TRIGGER", "released", e);
-        playerSphere.RemoveBraker(sender);
-    }
+        void DoTouchpadReleased(object sender, ControllerInteractionEventArgs e)
+        {
+            // DebugLogger(e.controllerIndex, "TOUCHPAD", "released", e);
+        }
 
-    void DoTriggerAxisChanged(object sender, ControllerInteractionEventArgs e)
-    {
-       // DebugLogger(e.controllerIndex, "TRIGGER", "axis changed", e);
-    }
+        void DoTouchpadTouchStart(object sender, ControllerInteractionEventArgs e)
+        {
+            // DebugLogger(e.controllerIndex, "TOUCHPAD", "touched", e);
+        }
 
-    void DoApplicationMenuPressed(object sender, ControllerInteractionEventArgs e)
-    {
-       DebugLogger(e.controllerIndex, "APPLICATION MENU", "pressed down", e);
-        playerSphere.ResetPlayer();
-    }
+        void DoTouchpadTouchEnd(object sender, ControllerInteractionEventArgs e)
+        {
+            // DebugLogger(e.controllerIndex, "TOUCHPAD", "untouched", e);
+        }
 
-    void DoApplicationMenuReleased(object sender, ControllerInteractionEventArgs e)
-    {
-      // DebugLogger(e.controllerIndex, "APPLICATION MENU", "released", e);
-    }
-
-    void DoGripPressed(object sender, ControllerInteractionEventArgs e)
-    {
-      // DebugLogger(e.controllerIndex, "GRIP", "pressed down", e);
-    }
-
-    void DoGripReleased(object sender, ControllerInteractionEventArgs e)
-    {
-      // DebugLogger(e.controllerIndex, "GRIP", "released", e);
-    }
-
-    void DoTouchpadPressed(object sender, ControllerInteractionEventArgs e)
-    {
-      // DebugLogger(e.controllerIndex, "TOUCHPAD", "pressed down", e);
-    }
-
-    void DoTouchpadReleased(object sender, ControllerInteractionEventArgs e)
-    {
-      // DebugLogger(e.controllerIndex, "TOUCHPAD", "released", e);
-    }
-
-    void DoTouchpadTouchStart(object sender, ControllerInteractionEventArgs e)
-    {
-      // DebugLogger(e.controllerIndex, "TOUCHPAD", "touched", e);
-    }
-
-    void DoTouchpadTouchEnd(object sender, ControllerInteractionEventArgs e)
-    {
-      // DebugLogger(e.controllerIndex, "TOUCHPAD", "untouched", e);
-    }
-
-    void DoTouchpadAxisChanged(object sender, ControllerInteractionEventArgs e)
-    {
-      // DebugLogger(e.controllerIndex, "TOUCHPAD", "axis changed", e);
+        void DoTouchpadAxisChanged(object sender, ControllerInteractionEventArgs e)
+        {
+            // DebugLogger(e.controllerIndex, "TOUCHPAD", "axis changed", e);
+        }
     }
 }

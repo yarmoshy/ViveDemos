@@ -11,6 +11,9 @@ namespace VRTK
     /// </remarks>
     public class SDK_InputSimulator : MonoBehaviour
     {
+        public GameObject player;
+        public GameObject gameState;
+
         #region Public fields
 
         [Tooltip("Hide hands when disabling them.")]
@@ -205,21 +208,39 @@ namespace VRTK
 
         private void UpdatePosition()
         {
+            Rigidbody prb = player.GetComponent<Rigidbody>();
+
             if (Input.GetKey(KeyCode.W))
             {
-                transform.Translate(transform.forward * Time.deltaTime * playerMoveMultiplier, Space.World);
+                //player.transform.Translate(transform.forward * Time.deltaTime * playerMoveMultiplier, Space.World);
+                Vector3 impact = transform.forward * playerMoveMultiplier;
+                prb.AddForce(new Vector3(impact.x, 0, impact.z));
             }
             else if (Input.GetKey(KeyCode.S))
             {
-                transform.Translate(-transform.forward * Time.deltaTime * playerMoveMultiplier, Space.World);
+                //player.transform.Translate(-transform.forward * Time.deltaTime * playerMoveMultiplier, Space.World);
+                Vector3 impact = -transform.forward * playerMoveMultiplier;
+                prb.AddForce(new Vector3(impact.x, 0, impact.z));
             }
             if (Input.GetKey(KeyCode.A))
             {
-                transform.Translate(-transform.right * Time.deltaTime * playerMoveMultiplier, Space.World);
+                //player.transform.Translate(-transform.right * Time.deltaTime * playerMoveMultiplier, Space.World);
+                Vector3 impact = -transform.right * playerMoveMultiplier;
+                prb.AddForce(new Vector3(impact.x, 0, impact.z));
             }
             else if (Input.GetKey(KeyCode.D))
             {
-                transform.Translate(transform.right * Time.deltaTime * playerMoveMultiplier, Space.World);
+                //player.transform.Translate(transform.right * Time.deltaTime * playerMoveMultiplier, Space.World);
+                Vector3 impact = transform.right * playerMoveMultiplier;
+                prb.AddForce(new Vector3(impact.x, 0, impact.z));
+            }
+            else if (Input.GetKey(KeyCode.R))
+            {
+                gameState.SendMessage("SetReady");
+            } else if (Input.GetKey(KeyCode.X))
+            {
+                prb.velocity = Vector3.zero;
+                prb.AddTorque(-(prb.mass * prb.angularVelocity));
             }
         }
 

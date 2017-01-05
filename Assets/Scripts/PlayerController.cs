@@ -1,18 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerController : MonoBehaviour {
-    public GameObject player;
-
-    private Vector3 offset;
-
-    void Start()
+namespace Game
+{
+    public class PlayerController : MonoBehaviour
     {
-        offset = transform.position - player.transform.position;
-    }
+        public GameObject player;
 
-    void LateUpdate()
-    {
-        transform.position = player.transform.position + offset;
+        private Vector3 offset;
+
+        void Start()
+        {
+            offset = transform.position - player.transform.position;
+        }
+
+        void LateUpdate()
+        {
+            transform.position = player.transform.position + offset;
+        }
     }
 }
