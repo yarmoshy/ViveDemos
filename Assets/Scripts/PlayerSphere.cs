@@ -87,7 +87,7 @@ namespace Game
         protected override void Awake()
         {
             base.Awake();
-            interactableRigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
+          //  interactableRigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
         }
 
         protected void Start()
