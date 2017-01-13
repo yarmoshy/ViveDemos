@@ -12,6 +12,8 @@ namespace Game
         public CheckPoint[] checkPoints;
         public CheckPoint currentCheckPoint;
 
+        private bool updateCheckpoint;
+
 
         void Start()
         {
@@ -51,12 +53,21 @@ namespace Game
         public void SetCurrentCheckPoint(CheckPoint newCheckPoint)
         {
             currentCheckPoint = newCheckPoint;
-            currentCheckPoint.gameObject.SetActive(false);
-            int index = Array.IndexOf(checkPoints, currentCheckPoint);
-            if (checkPoints.Length > index + 1)
+            updateCheckpoint = true;
+        }
+
+        public void Update()
+        {
+            if (updateCheckpoint)
             {
-                CheckPoint cp = checkPoints[index + 1];
-                cp.gameObject.SetActive(true);
+                currentCheckPoint.gameObject.SetActive(false);
+                int index = Array.IndexOf(checkPoints, currentCheckPoint);
+                if (checkPoints.Length > index + 1)
+                {
+                    CheckPoint cp = checkPoints[index + 1];
+                    cp.gameObject.SetActive(true);
+                }
+                updateCheckpoint = false;
             }
         }
     }

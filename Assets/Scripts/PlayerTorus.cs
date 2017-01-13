@@ -11,10 +11,10 @@ namespace Game
         public GameObject player;
 
         // Update is called once per frame
-        void FixedUpdate()
+        void LateUpdate()
         {
-            transform.position = new Vector3(player.transform.position.x + 1, player.transform.position.y, player.transform.position.z);
-            transform.rotation = Quaternion.identity; 
+            transform.position = new Vector3(player.transform.position.x + 1f, player.transform.position.y, player.transform.position.z);
+            transform.rotation = Quaternion.identity;
         }
     }
 }
