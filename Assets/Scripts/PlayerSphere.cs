@@ -137,7 +137,13 @@ namespace Game
                 Vector3 force = prb.velocity.normalized * multiplier;
                 prb.AddForce(force, ForceMode.Impulse);
             }
-            if (prb.velocity.magnitude > highestVelocityMagnitude)
+            else if (boost && prb.velocity.magnitude > maxBoostMagnitude)
+            {
+                prb.velocity = prb.velocity.normalized * maxBoostMagnitude;
+
+            }
+
+            if (prb.velocity.magnitude >= highestVelocityMagnitude)
             {
                 highestVelocityMagnitude = prb.velocity.magnitude;
                 Debug.Log("highestVelocityMagnitude:" + highestVelocityMagnitude);
