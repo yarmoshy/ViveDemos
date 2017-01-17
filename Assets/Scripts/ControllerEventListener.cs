@@ -8,6 +8,7 @@ namespace Game
     {
         public PlayerSphere playerSphere;
         public GameState gameState;
+        public GameObject player;
         // Use this for initialization
         void Start()
         {
@@ -65,6 +66,7 @@ namespace Game
         {
             DebugLogger(e.controllerIndex, "APPLICATION MENU", "pressed down", e);
             playerSphere.ResetPlayer();
+            player.GetComponent<PlayerCollider>().ResetRemovedColliders();
         }
 
         void DoApplicationMenuReleased(object sender, ControllerInteractionEventArgs e)
