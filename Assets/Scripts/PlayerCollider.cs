@@ -7,11 +7,14 @@ namespace Game
     {
         public PlayerSphere playerSphere;
 
+        ArrayList removedCollideres = new ArrayList();
+
         void OnCollisionEnter(Collision col)
         {
             if (col.gameObject.name == "Terrain")
             {
                 playerSphere.ResetPlayer();
+                ResetRemovedColliders();
             }
             if (col.gameObject.tag == "BoostPlatform")
             {
@@ -43,7 +46,20 @@ namespace Game
             if (col.gameObject.tag == "RemoveAfterCollision")
             {
                 col.gameObject.SetActive(false);
+                if (!removedCollideres.Contains(col))
+                { 
+                    removedCollideres.Add(col);
+                }
             }
+        }
+
+        public void ResetRemovedColliders()
+        {
+            foreach (Collision col in removedCollideres)
+            {
+                col.gameObject.SetActive(true);
+            }
+            removedCollideres.Clear();
         }
     }
 }

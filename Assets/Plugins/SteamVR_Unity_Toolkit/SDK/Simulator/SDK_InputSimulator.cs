@@ -245,6 +245,7 @@ namespace VRTK
             } else if (Input.GetKey(KeyCode.Q))
             {
                 playerSphere.SendMessage("ResetPlayer");
+                player.SendMessage("ResetRemovedColliders");
             }
         }
 
