@@ -76,12 +76,16 @@ namespace Game
 
         void DoGripPressed(object sender, ControllerInteractionEventArgs e)
         {
-            // DebugLogger(e.controllerIndex, "GRIP", "pressed down", e);
+            DebugLogger(e.controllerIndex, "GRIP", "pressed down", e);
+            playerSphere.AddGripper(sender);
+
         }
 
         void DoGripReleased(object sender, ControllerInteractionEventArgs e)
         {
-            // DebugLogger(e.controllerIndex, "GRIP", "released", e);
+            DebugLogger(e.controllerIndex, "GRIP", "released", e);
+            playerSphere.RemoveGripper(sender);
+
         }
 
         void DoTouchpadPressed(object sender, ControllerInteractionEventArgs e)

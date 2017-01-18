@@ -9,13 +9,14 @@ namespace Game
         [Header("Game Objects", order = 4)]
         public GameObject player;
         public GameState gameState;
-        public int touchForceMultiplier = 100;
+        public int touchForceMultiplier = 200;
         public ushort hapticFeedbackStrength = 500;
         public float maxBrakeTime = 1000.0f;
         public float minBrakeTime = 20.0f;
         public float boostMultiplier = 1.0f;
 
         ArrayList brakingPressures = new ArrayList();
+        ArrayList grippedControllers = new ArrayList();
         ArrayList touchingControllers = new ArrayList();
         ArrayList deadControllers = new ArrayList();
         Hashtable deadControllerMoveDistances = new Hashtable();
@@ -34,7 +35,7 @@ namespace Game
         {
             base.StartTouching(touchingObject);
             if (!gameState.GetReady()) return;
-            if (!touchingControllers.Contains(touchingObject) && !deadControllers.Contains(touchingObject))
+            if (!touchingControllers.Contains(touchingObject) && !deadControllers.Contains(touchingObject) && grippedControllers.Count == 0)
             {
                 touchingControllers.Add(touchingObject);
             }
@@ -55,6 +56,16 @@ namespace Game
         public void RemoveBraker(object sender)
         {
             brakingPressures.Remove(sender);
+        }
+
+        public void AddGripper(object sender)
+        {
+            grippedControllers.Add(sender);
+        }
+
+        public void RemoveGripper(object sender)
+        {
+            grippedControllers.Remove(sender);
         }
 
         public void ResetPlayer()
