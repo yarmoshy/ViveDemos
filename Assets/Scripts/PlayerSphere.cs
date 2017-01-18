@@ -29,7 +29,7 @@ namespace Game
         private bool boost = false;
         private float maxBoostMagnitude;
         private float minDeadControllerMoveDistance = 0.25f;
-        private float highestVelocityMagnitude;
+        //private float highestVelocityMagnitude;
 
         public override void StartTouching(GameObject touchingObject)
         {
@@ -82,7 +82,7 @@ namespace Game
         {
             boost = true;
             maxBoostMagnitude = boostPower;
-            highestVelocityMagnitude = 0;
+            //highestVelocityMagnitude = 0;
         }
 
         public void UnboostPlayer()
@@ -154,11 +154,11 @@ namespace Game
 
             }
 
-            if (prb.velocity.magnitude >= highestVelocityMagnitude)
-            {
-                highestVelocityMagnitude = prb.velocity.magnitude;
-                Debug.Log("highestVelocityMagnitude:" + highestVelocityMagnitude);
-            }
+            //if (prb.velocity.magnitude >= highestVelocityMagnitude)
+            //{
+            //    highestVelocityMagnitude = prb.velocity.magnitude;
+                //Debug.Log("highestVelocityMagnitude:" + highestVelocityMagnitude);
+            //}
         }
 
         private void DoStop()

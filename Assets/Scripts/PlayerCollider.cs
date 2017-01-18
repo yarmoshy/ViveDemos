@@ -18,6 +18,8 @@ namespace Game
             }
             if (col.gameObject.tag == "BoostPlatform")
             {
+                //Debug.Log("Entered BoostPlatform:" + col.gameObject.name);
+
                 if (col.gameObject.name.Contains("BoostPower:"))
                 {
                     playerSphere.BoostPlayer(float.Parse(col.gameObject.name.Substring("BoostPower:".Length)));
