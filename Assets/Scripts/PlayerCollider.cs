@@ -8,6 +8,7 @@ namespace Game
         public PlayerSphere playerSphere;
 
         ArrayList removedCollideres = new ArrayList();
+        ArrayList activedColliders = new ArrayList();
 
         void OnCollisionEnter(Collision col)
         {
@@ -27,6 +28,14 @@ namespace Game
                 else
                 {
                     playerSphere.BoostPlayer();
+                }
+            }
+            ActiveOnCollision aoc = col.gameObject.GetComponent<ActiveOnCollision>();
+            if (aoc != null)
+            {
+                foreach (GameObject go in aoc.objectsToActivate) {
+                    go.SetActive(true);
+                    activedColliders.Add(go);
                 }
             }
         }
@@ -62,6 +71,11 @@ namespace Game
                 col.gameObject.SetActive(true);
             }
             removedCollideres.Clear();
+            foreach (GameObject go in activedColliders)
+            {
+                go.SetActive(false);
+            }
+            activedColliders.Clear();
         }
     }
 }
