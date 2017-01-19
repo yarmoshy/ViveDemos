@@ -35,7 +35,8 @@ namespace Game
         {
             base.StartTouching(touchingObject);
             if (!gameState.GetReady()) return;
-            if (!touchingControllers.Contains(touchingObject) && !deadControllers.Contains(touchingObject) && grippedControllers.Count == 0)
+            Rigidbody prb = player.GetComponent<Rigidbody>();
+            if (!touchingControllers.Contains(touchingObject) && !deadControllers.Contains(touchingObject) && grippedControllers.Count == 0 && prb.velocity.magnitude < 50.0)
             {
                 touchingControllers.Add(touchingObject);
             }
@@ -157,6 +158,7 @@ namespace Game
             //if (prb.velocity.magnitude >= highestVelocityMagnitude)
             //{
             //    highestVelocityMagnitude = prb.velocity.magnitude;
+            //Debug.Log(prb.velocity.magnitude);
                 //Debug.Log("highestVelocityMagnitude:" + highestVelocityMagnitude);
             //}
         }
