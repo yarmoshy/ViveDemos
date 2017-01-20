@@ -38,6 +38,11 @@ namespace Game
                     activedColliders.Add(go);
                 }
             }
+            StopRotation sr = col.gameObject.GetComponent<StopRotation>();
+            if (sr != null)
+            {
+                sr.DoStopRotation();
+            }
         }
 
         void OnTriggerEnter(Collider col)

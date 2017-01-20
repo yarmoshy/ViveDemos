@@ -241,6 +241,7 @@ namespace VRTK
             } else if (Input.GetKey(KeyCode.X))
             {
                 prb.velocity = Vector3.zero;
+                prb.angularVelocity = Vector3.zero;
                 prb.AddTorque(-(prb.mass * prb.angularVelocity));
             } else if (Input.GetKey(KeyCode.Q))
             {
