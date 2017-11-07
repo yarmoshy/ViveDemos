@@ -1,0 +1,101 @@
+Initialize engine version: 5.4.0b20 (b220a1d6ff28)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce GTX 1080 (ID=0x1b80)
+    Vendor:   NVIDIA
+    VRAM:     8110 MB
+Begin MonoManager ReloadAssembly
+Platform assembly: C:\Users\Public\Documents\Unity Projects\SteamVR_Unity_Toolkit-master\my_game_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Users\Public\Documents\Unity Projects\SteamVR_Unity_Toolkit-master\my_game_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\Public\Documents\Unity Projects\SteamVR_Unity_Toolkit-master\my_game_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
+Loading C:\Users\Public\Documents\Unity Projects\SteamVR_Unity_Toolkit-master\my_game_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
+Platform assembly: C:\Users\Public\Documents\Unity Projects\SteamVR_Unity_Toolkit-master\my_game_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Users\Public\Documents\Unity Projects\SteamVR_Unity_Toolkit-master\my_game_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: C:\Users\Public\Documents\Unity Projects\SteamVR_Unity_Toolkit-master\my_game_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Users\Public\Documents\Unity Projects\SteamVR_Unity_Toolkit-master\my_game_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: C:\Users\Public\Documents\Unity Projects\SteamVR_Unity_Toolkit-master\my_game_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading C:\Users\Public\Documents\Unity Projects\SteamVR_Unity_Toolkit-master\my_game_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: C:\Users\Public\Documents\Unity Projects\SteamVR_Unity_Toolkit-master\my_game_Data\Managed\XTUtilities.dll (this message is harmless)
+Loading C:\Users\Public\Documents\Unity Projects\SteamVR_Unity_Toolkit-master\my_game_Data\Managed\XTUtilities.dll into Unity Child Domain
+Platform assembly: C:\Users\Public\Documents\Unity Projects\SteamVR_Unity_Toolkit-master\my_game_Data\Managed\ProBuilderCore-Unity5.dll (this message is harmless)
+Loading C:\Users\Public\Documents\Unity Projects\SteamVR_Unity_Toolkit-master\my_game_Data\Managed\ProBuilderCore-Unity5.dll into Unity Child Domain
+Platform assembly: C:\Users\Public\Documents\Unity Projects\SteamVR_Unity_Toolkit-master\my_game_Data\Managed\ProBuilderMeshOps-Unity5.dll (this message is harmless)
+Loading C:\Users\Public\Documents\Unity Projects\SteamVR_Unity_Toolkit-master\my_game_Data\Managed\ProBuilderMeshOps-Unity5.dll into Unity Child Domain
+Platform assembly: C:\Users\Public\Documents\Unity Projects\SteamVR_Unity_Toolkit-master\my_game_Data\Managed\KDTree.dll (this message is harmless)
+Loading C:\Users\Public\Documents\Unity Projects\SteamVR_Unity_Toolkit-master\my_game_Data\Managed\KDTree.dll into Unity Child Domain
+Platform assembly: C:\Users\Public\Documents\Unity Projects\SteamVR_Unity_Toolkit-master\my_game_Data\Managed\pb_Stl.dll (this message is harmless)
+Loading C:\Users\Public\Documents\Unity Projects\SteamVR_Unity_Toolkit-master\my_game_Data\Managed\pb_Stl.dll into Unity Child Domain
+Platform assembly: C:\Users\Public\Documents\Unity Projects\SteamVR_Unity_Toolkit-master\my_game_Data\Managed\Triangle.dll (this message is harmless)
+Loading C:\Users\Public\Documents\Unity Projects\SteamVR_Unity_Toolkit-master\my_game_Data\Managed\Triangle.dll into Unity Child Domain
+- Completed reload, in  0.078 seconds
+Platform assembly: C:\Users\Public\Documents\Unity Projects\SteamVR_Unity_Toolkit-master\my_game_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: C:\Users\Public\Documents\Unity Projects\SteamVR_Unity_Toolkit-master\my_game_Data\Managed\System.dll (this message is harmless)
+<RI> Initializing input.
+<RI> Input initialized.
+desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
+<RI> Initialized touch support.
+UnloadTime: 10.630852 ms
+Fallback handler could not load library C:/Users/Public/Documents/Unity Projects/SteamVR_Unity_Toolkit-master/my_game_Data/Mono/openvr_api
+Fallback handler could not load library C:/Users/Public/Documents/Unity Projects/SteamVR_Unity_Toolkit-master/my_game_Data/Mono/.\openvr_api
+Fallback handler could not load library C:/Users/Public/Documents/Unity Projects/SteamVR_Unity_Toolkit-master/my_game_Data/Mono/openvr_api
+Fallback handler could not load library C:/Users/Public/Documents/Unity Projects/SteamVR_Unity_Toolkit-master/my_game_Data/Mono/libopenvr_api
+Fallback handler could not load library C:/Users/Public/Documents/Unity Projects/SteamVR_Unity_Toolkit-master/my_game_Data/Mono/.\libopenvr_api
+Fallback handler could not load library C:/Users/Public/Documents/Unity Projects/SteamVR_Unity_Toolkit-master/my_game_Data/Mono/libopenvr_api
+Fallback handler could not load library C:/Users/Public/Documents/Unity Projects/SteamVR_Unity_Toolkit-master/my_game_Data/Mono/openvr_api
+Fallback handler could not load library C:/Users/Public/Documents/Unity Projects/SteamVR_Unity_Toolkit-master/my_game_Data/Mono/.\openvr_api
+Fallback handler could not load library C:/Users/Public/Documents/Unity Projects/SteamVR_Unity_Toolkit-master/my_game_Data/Mono/openvr_api
+Fallback handler could not load library C:/Users/Public/Documents/Unity Projects/SteamVR_Unity_Toolkit-master/my_game_Data/Mono/libopenvr_api
+Fallback handler could not load library C:/Users/Public/Documents/Unity Projects/SteamVR_Unity_Toolkit-master/my_game_Data/Mono/.\libopenvr_api
+Fallback handler could not load library C:/Users/Public/Documents/Unity Projects/SteamVR_Unity_Toolkit-master/my_game_Data/Mono/libopenvr_api
+Fallback handler could not load library C:/Users/Public/Documents/Unity Projects/SteamVR_Unity_Toolkit-master/my_game_Data/Mono/openvr_api
+Fallback handler could not load library C:/Users/Public/Documents/Unity Projects/SteamVR_Unity_Toolkit-master/my_game_Data/Mono/.\openvr_api
+Fallback handler could not load library C:/Users/Public/Documents/Unity Projects/SteamVR_Unity_Toolkit-master/my_game_Data/Mono/openvr_api
+Fallback handler could not load library C:/Users/Public/Documents/Unity Projects/SteamVR_Unity_Toolkit-master/my_game_Data/Mono/libopenvr_api
+Fallback handler could not load library C:/Users/Public/Documents/Unity Projects/SteamVR_Unity_Toolkit-master/my_game_Data/Mono/.\libopenvr_api
+Fallback handler could not load library C:/Users/Public/Documents/Unity Projects/SteamVR_Unity_Toolkit-master/my_game_Data/Mono/libopenvr_api
+DllNotFoundException: openvr_api
+  at (wrapper managed-to-native) Valve.VR.OpenVRInterop:GetInitToken ()
+  at Valve.VR.OpenVR.GetInitToken () [0x00000] in <filename unknown>:0 
+  at Valve.VR.OpenVR+COpenVRContext.CheckClear () [0x00000] in <filename unknown>:0 
+  at Valve.VR.OpenVR+COpenVRContext.VRSystem () [0x00000] in <filename unknown>:0 
+  at Valve.VR.OpenVR.get_System () [0x00000] in <filename unknown>:0 
+  at SteamVR_RenderModel.OnEnable () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+DllNotFoundException: openvr_api
+  at (wrapper managed-to-native) Valve.VR.OpenVRInterop:GetInitToken ()
+  at Valve.VR.OpenVR.GetInitToken () [0x00000] in <filename unknown>:0 
+  at Valve.VR.OpenVR+COpenVRContext.CheckClear () [0x00000] in <filename unknown>:0 
+  at Valve.VR.OpenVR+COpenVRContext.VRSystem () [0x00000] in <filename unknown>:0 
+  at Valve.VR.OpenVR.get_System () [0x00000] in <filename unknown>:0 
+  at SteamVR_RenderModel.OnEnable () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+DllNotFoundException: openvr_api
+  at (wrapper managed-to-native) Valve.VR.OpenVRInterop:GetInitToken ()
+  at Valve.VR.OpenVR.GetInitToken () [0x00000] in <filename unknown>:0 
+  at Valve.VR.OpenVR+COpenVRContext.CheckClear () [0x00000] in <filename unknown>:0 
+  at Valve.VR.OpenVR+COpenVRContext.VRSettings () [0x00000] in <filename unknown>:0 
+  at Valve.VR.OpenVR.get_Settings () [0x00000] in <filename unknown>:0 
+  at SteamVR_Ears.OnEnable () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+DllNotFoundException: openvr_api
+  at (wrapper managed-to-native) Valve.VR.OpenVRInterop:GetInitToken ()
+  at Valve.VR.OpenVR.GetInitToken () [0x00000] in <filename unknown>:0 
+  at Valve.VR.OpenVR+COpenVRContext.CheckClear () [0x00000] in <filename unknown>:0 
+  at Valve.VR.OpenVR+COpenVRContext.VRSystem () [0x00000] in <filename unknown>:0 
+  at Valve.VR.OpenVR.get_System () [0x00000] in <filename unknown>:0 
+  at SteamVR_ControllerManager.Refresh () [0x00000] in <filename unknown>:0 
+  at SteamVR_ControllerManager.OnTrackedDeviceRoleChanged (System.Object[] args) [0x00000] in <filename unknown>:0 
+  at SteamVR_ControllerManager.OnEnable () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Setting up 2 worker threads for Enlighten.
+  Thread -> id: 68ac4 -> priority: 1 
+  Thread -> id: 68a44 -> priority: 1 
